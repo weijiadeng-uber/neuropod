@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from setuptools.dist import Distribution
 
-REQUIRED_PACKAGES = ["numpy", "testpath", "typing", "future", "six"]
+REQUIRED_PACKAGES = ["numpy", "testpath", "typing", "future", "six", "pip-tools"]
 
 class BinaryDistribution(Distribution):
     """Distribution which always forces a binary package with platform name"""

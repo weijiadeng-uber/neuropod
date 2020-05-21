@@ -25,6 +25,7 @@ import numpy as np
 
 from neuropod.backends.neuropod_executor import NeuropodExecutor
 from neuropod.utils.hash_utils import sha256sum
+from neuropod.utils.pip_utils import load_deps
 
 # Create the neuropod package symlink directory
 SYMLINKS_DIR = tempfile.mkdtemp(suffix=".neuropod_python_symlinks")
@@ -55,7 +56,7 @@ class PythonNeuropodExecutor(NeuropodExecutor):
     Executes a python neuropod
     """
 
-    def __init__(self, neuropod_path, load_custom_ops=True):
+    def __init__(self, neuropod_path, is_native=False, load_custom_ops=True):
         """
         Load a python neuropod
 
@@ -72,6 +73,15 @@ class PythonNeuropodExecutor(NeuropodExecutor):
         # Load entrypoint info from config
         entrypoint_package_path = model_config["entrypoint_package"]
         entrypoint_fn_name = model_config["entrypoint"]
+
+        if is_native:
+            # This is running from the native code - set up the requirements if any
+            # Note: This is only intended to work when using OPE so this can be problematic
+            # when running multiple python models in a single process
+            # (which you should try to avoid anyway because of the GIL)
+            lockfile = os.path.join(neuropod_path, "0", "requirements.lock")
+            if os.path.isfile(lockfile):
+                load_deps(lockfile)
 
         # Add the custom op paths to the beginning of the python path
         # Note: there currently isn't a good way to handle multiple custom ops with the same name.
