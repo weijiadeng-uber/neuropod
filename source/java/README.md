@@ -5,6 +5,10 @@
 ```
 make run
 ```
+4. To build the jar file:
+```
+make jar
+```
 4. To clean up:
 ```
 make clean
@@ -27,7 +31,7 @@ NeuropodValueMap valueMap = neuropod.infer(inputs);
 
 4. To retrieve the results:
 ```
-List<Object> results = valueMap.getValue(key).toList();
+Map<String, Object> outputs = valueMap.toJavaMap();
 ```
 
 5. Don't forget to clean up the memory:

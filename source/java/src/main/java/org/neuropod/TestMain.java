@@ -24,20 +24,16 @@ public class TestMain {
         System.out.println("The input is");
         System.out.println(inputs);
 
-
-
         NeuropodValueMap valueMap = neuropod.infer(inputs);
 
         List<String> keyList = valueMap.getKeyList();
 
         System.out.println("The output is");
-        for (String key : keyList) {
-            System.out.print(key + "=");
-            NeuropodValue value = valueMap.getValue(key);
-            List<Object> res = value.toList();
-            System.out.println(res);
-        }
+        System.out.println(valueMap.toJavaMap());
         neuropod.close();
+        // Double delete test
+        neuropod.close();
+
         valueMap.close();
     }
 

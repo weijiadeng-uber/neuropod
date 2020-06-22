@@ -97,7 +97,6 @@ void JNI_OnUnload(JavaVM *vm, void *reserved)
 {
 
     // Obtain the JNIEnv from the VM
-    // NOTE: some re-do the JNI Version check here, but I find that redundant
     JNIEnv *env;
     vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION);
     // Destroy the global references
@@ -108,4 +107,5 @@ void JNI_OnUnload(JavaVM *vm, void *reserved)
     env->DeleteGlobalRef(java_lang_Integer);
     env->DeleteGlobalRef(java_lang_Long);
     env->DeleteGlobalRef(org_neuropod_NeuropodJNIException);
+    env->DeleteGlobalRef(org_neuropod_DataType);
 }

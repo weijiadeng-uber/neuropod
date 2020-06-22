@@ -1,6 +1,7 @@
 #include "org_neuropod_Neuropod.h"
 
 #include "jclass_register.h"
+#include "reference_manager.h"
 #include "utils.h"
 
 #include <neuropod/neuropod.hh>
@@ -20,9 +21,10 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeNew__Ljava_lang_String_
     opts.use_ope = true;
     try
     {
-        auto                convertedPath = toString(env, path);
-        neuropod::Neuropod *ret           = new neuropod::Neuropod(convertedPath, opts);
-        return reinterpret_cast<jlong>(ret);
+        auto convertedPath = toString(env, path);
+        auto ret           = std::make_shared<neuropod::Neuropod>(convertedPath, opts);
+        ReferenceManager<neuropod::Neuropod>::put(ret);
+        return reinterpret_cast<jlong>(ret.get());
     }
     catch (const std::exception &e)
     {
@@ -39,9 +41,10 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeNew__Ljava_lang_String_
     auto opts = reinterpret_cast<neuropod::RuntimeOptions *>(optHandle);
     try
     {
-        auto                convertedPath = toString(env, path);
-        neuropod::Neuropod *ret           = new neuropod::Neuropod(convertedPath, *opts);
-        return reinterpret_cast<jlong>(ret);
+        auto convertedPath = toString(env, path);
+        auto ret           = std::make_shared<neuropod::Neuropod>(convertedPath, *opts);
+        ReferenceManager<neuropod::Neuropod>::put(ret);
+        return reinterpret_cast<jlong>(ret.get());
     }
     catch (const std::exception &e)
     {
@@ -55,12 +58,17 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeInfer(JNIEnv *env,
                                                                jlong inputHandle,
                                                                jlong modelHandle)
 {
-    auto input = reinterpret_cast<neuropod::NeuropodValueMap *>(inputHandle);
-    auto model = reinterpret_cast<neuropod::Neuropod *>(modelHandle);
+
     try
     {
-        auto ret = model->infer(*input).release();
-        return reinterpret_cast<jlong>(ret);
+        ReferenceManager<neuropod::Neuropod>::check(modelHandle);
+        auto model = reinterpret_cast<neuropod::Neuropod *>(modelHandle);
+        ReferenceManager<neuropod::NeuropodValueMap>::check(inputHandle);
+        auto input = reinterpret_cast<neuropod::NeuropodValueMap *>(inputHandle);
+
+        std::shared_ptr<neuropod::NeuropodValueMap> ret = model->infer(*input);
+        ReferenceManager<neuropod::NeuropodValueMap>::put(ret);
+        return reinterpret_cast<jlong>(ret.get());
     }
     catch (const std::exception &e)
     {
@@ -74,7 +82,8 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeCreateTensorsFromMemory
                                                                                  jobject inputs,
                                                                                  jlong   modelHandle)
 {
-    auto ret = new neuropod::NeuropodValueMap();
+    auto ret = std::make_shared<neuropod::NeuropodValueMap>();
+    ReferenceManager<neuropod::NeuropodValueMap>::put(ret);
     try
     {
         auto model     = reinterpret_cast<neuropod::Neuropod *>(modelHandle);
@@ -91,11 +100,11 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeCreateTensorsFromMemory
                                                           tensorSpec.type,
                                                           neuropod::jni::getDefaultInputDim(tensorSpec));
         }
-        return reinterpret_cast<jlong>(ret);
+        return reinterpret_cast<jlong>(ret.get());
     }
     catch (const std::exception &e)
     {
-        delete ret;
+        ReferenceManager<neuropod::NeuropodValueMap>::remove(ret);
         throwJavaException(env, e.what());
     }
     return reinterpret_cast<jlong>(nullptr);
@@ -103,17 +112,16 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeCreateTensorsFromMemory
 
 JNIEXPORT void JNICALL Java_org_neuropod_Neuropod_nativeDelete(JNIEnv *, jobject obj, jlong handle)
 {
-    auto pointer = reinterpret_cast<neuropod::Neuropod *>(handle);
-    delete pointer;
+    ReferenceManager<neuropod::Neuropod>::remove(handle);
 }
 
 JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureKeys(JNIEnv *env, jclass, jlong handle)
 {
     try
     {
-        auto model     = reinterpret_cast<neuropod::Neuropod *>(handle);
-        auto inputSpec = model->get_inputs();
-        jobject ret = env->NewObject(java_util_ArrayList, java_util_ArrayList_, inputSpec.size());
+        auto    model     = reinterpret_cast<neuropod::Neuropod *>(handle);
+        auto    inputSpec = model->get_inputs();
+        jobject ret       = env->NewObject(java_util_ArrayList, java_util_ArrayList_, inputSpec.size());
         for (const auto &tensorSpec : inputSpec)
         {
             jstring key = env->NewStringUTF(tensorSpec.name.c_str());
@@ -133,15 +141,17 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureDataTy
 {
     try
     {
-        auto model     = reinterpret_cast<neuropod::Neuropod *>(handle);
-        auto inputSpec = model->get_inputs();
-        jobject ret = env->NewObject(java_util_ArrayList, java_util_ArrayList_, inputSpec.size());
+        ReferenceManager<neuropod::Neuropod>::check(handle);
+        auto    model     = reinterpret_cast<neuropod::Neuropod *>(handle);
+        auto    inputSpec = model->get_inputs();
+        jobject ret       = env->NewObject(java_util_ArrayList, java_util_ArrayList_, inputSpec.size());
         for (const auto &tensorSpec : inputSpec)
         {
 
-            env->CallBooleanMethod(ret,
-                                   java_util_ArrayList_add,
-                                   getFieldObject(env, org_neuropod_DataType, tensorTypeToString(tensorSpec.type).c_str()));
+            env->CallBooleanMethod(
+                ret,
+                java_util_ArrayList_add,
+                getFieldObject(env, org_neuropod_DataType, tensorTypeToString(tensorSpec.type).c_str()));
         }
         return ret;
     }

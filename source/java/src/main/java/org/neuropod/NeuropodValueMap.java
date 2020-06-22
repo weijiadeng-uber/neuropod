@@ -82,11 +82,13 @@ public class NeuropodValueMap extends NativeClass {
      *
      * @return the map
      */
-    public Map<String, Object> toJavaMap() {
+    public Map<String, Object> toJavaMap() throws Exception {
         List<String> keys = getKeyList();
         Map<String, Object> ret = new HashMap<>();
         for (String key : keys) {
-            ret.put(key, getValue(key).toList());
+            NeuropodValue value = getValue(key);
+            ret.put(key, value.toList());
+            value.close();
         }
         return ret;
     }

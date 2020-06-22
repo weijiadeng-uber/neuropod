@@ -1,6 +1,7 @@
 #include "org_neuropod_NeuropodValue.h"
 
 #include "jclass_register.h"
+#include "reference_manager.h"
 #include "utils.h"
 
 #include <neuropod/neuropod.hh>
@@ -17,6 +18,7 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValue_nativeToList(JNIEnv *e
     // This is not very efficient.
     try
     {
+        ReferenceManager<neuropod::NeuropodValue>::check(nativeHandle);
         auto    neuropodTensor = reinterpret_cast<neuropod::NeuropodValue *>(nativeHandle)->as_tensor();
         auto    size           = neuropodTensor->get_num_elements();
         auto    tensorType     = neuropodTensor->get_tensor_type();
@@ -83,6 +85,5 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValue_nativeToList(JNIEnv *e
 
 JNIEXPORT void JNICALL Java_org_neuropod_NeuropodValue_nativeDelete(JNIEnv *, jobject, jlong nativeHandle)
 {
-    auto pointer = reinterpret_cast<neuropod::NeuropodValue *>(nativeHandle);
-    delete pointer;
+    ReferenceManager<neuropod::NeuropodValue>::remove(nativeHandle);
 }
