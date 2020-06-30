@@ -1,5 +1,6 @@
 #include "jclass_register.h"
 
+#include "reference_manager.h"
 #include "utils.h"
 
 #include <exception>
@@ -34,9 +35,32 @@ jclass    java_lang_Long;
 jmethodID java_lang_Long_valueOf;
 jmethodID java_lang_Long_longValue;
 
+jclass java_nio_IntBuffer;
+jmethodID java_nio_IntBuffer_allocate;
+jmethodID java_nio_IntBuffer_array;
+
+jclass java_nio_LongBuffer;
+jmethodID java_nio_LongBuffer_allocate;
+jmethodID java_nio_LongBuffer_array;
+
+jclass java_nio_FloatBuffer;
+jmethodID java_nio_FloatBuffer_allocate;
+jmethodID java_nio_FloatBuffer_array;
+
+jclass java_nio_DoubleBuffer;
+jmethodID java_nio_DoubleBuffer_allocate;
+jmethodID java_nio_DoubleBuffer_array;
+
+jclass org_neuropod_TensorSpec;
+jmethodID org_neuropod_TensorSpec_;
+
+jclass org_neuropod_Dimension;
+jmethodID org_neuropod_Dimension_value_;
+jmethodID org_neuropod_Dimension_symbol_;
+
 jclass org_neuropod_NeuropodJNIException;
 
-jclass org_neuropod_DataType;
+jclass org_neuropod_TensorType;
 
 jint JNI_VERSION = JNI_VERSION_1_8;
 
@@ -82,7 +106,30 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
         java_lang_Long_valueOf   = getStaticMethodID(env, java_lang_Long, "valueOf", "(J)Ljava/lang/Long;");
         java_lang_Long_longValue = getMethodID(env, java_lang_Long, "longValue", "()J");
 
-        org_neuropod_DataType = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/DataType")));
+        java_nio_IntBuffer = static_cast<jclass>(env->NewGlobalRef(findClass(env, "java/nio/IntBuffer")));
+        java_nio_IntBuffer_array = getMethodID(env, java_nio_IntBuffer, "array", "()Ljava/lang/Object;");
+        java_nio_IntBuffer_allocate = getStaticMethodID(env,java_nio_IntBuffer, "allocate","(I)Ljava/nio/IntBuffer;");
+
+        java_nio_FloatBuffer = static_cast<jclass>(env->NewGlobalRef(findClass(env, "java/nio/FloatBuffer")));
+        java_nio_FloatBuffer_array = getMethodID(env, java_nio_FloatBuffer, "array", "()Ljava/lang/Object;");
+        java_nio_FloatBuffer_allocate = getStaticMethodID(env,java_nio_FloatBuffer, "allocate","(I)Ljava/nio/FloatBuffer;");
+
+        java_nio_LongBuffer = static_cast<jclass>(env->NewGlobalRef(findClass(env, "java/nio/LongBuffer")));
+        java_nio_LongBuffer_array = getMethodID(env, java_nio_LongBuffer, "array", "()Ljava/lang/Object;");
+        java_nio_LongBuffer_allocate = getStaticMethodID(env,java_nio_LongBuffer, "allocate","(I)Ljava/nio/LongBuffer;");
+
+        java_nio_DoubleBuffer = static_cast<jclass>(env->NewGlobalRef(findClass(env, "java/nio/DoubleBuffer")));
+        java_nio_DoubleBuffer_array = getMethodID(env, java_nio_DoubleBuffer, "array", "()Ljava/lang/Object;");
+        java_nio_DoubleBuffer_allocate = getStaticMethodID(env, java_nio_DoubleBuffer, "allocate", "(I)Ljava/nio/DoubleBuffer;");
+
+        org_neuropod_TensorSpec = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/TensorSpec")));
+        org_neuropod_TensorSpec_ = getMethodID(env, org_neuropod_TensorSpec, "<init>", "(Ljava/lang/String;Lorg/neuropod/TensorType;Ljava/util/List;)V");
+
+        org_neuropod_Dimension = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/Dimension")));;
+        org_neuropod_Dimension_value_ = getMethodID(env, org_neuropod_Dimension, "<init>", "(J)V");
+        org_neuropod_Dimension_symbol_ = getMethodID(env, org_neuropod_Dimension, "<init>", "(Ljava/lang/String;)V");
+
+        org_neuropod_TensorType = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/TensorType")));
     }
     catch (const std::exception &e)
     {
@@ -106,6 +153,16 @@ void JNI_OnUnload(JavaVM *vm, void *reserved)
     env->DeleteGlobalRef(java_lang_Double);
     env->DeleteGlobalRef(java_lang_Integer);
     env->DeleteGlobalRef(java_lang_Long);
+
+    env->DeleteGlobalRef(java_nio_IntBuffer);
+    env->DeleteGlobalRef(java_nio_FloatBuffer);
+    env->DeleteGlobalRef(java_nio_LongBuffer);
+    env->DeleteGlobalRef(java_nio_DoubleBuffer);
+
+
     env->DeleteGlobalRef(org_neuropod_NeuropodJNIException);
-    env->DeleteGlobalRef(org_neuropod_DataType);
+    env->DeleteGlobalRef(org_neuropod_TensorType);
+    neuropod::jni::ReferenceManager<neuropod::Neuropod>::reset();
+    neuropod::jni::ReferenceManager<neuropod::NeuropodValue>::reset();
+    neuropod::jni::ReferenceManager<neuropod::NeuropodValueMap>::reset();
 }

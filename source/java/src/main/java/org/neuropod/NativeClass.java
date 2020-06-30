@@ -5,7 +5,7 @@ import java.sql.Ref;
 /**
  * This is a base class for all class with a binding to native class
  */
-public abstract class NativeClass implements AutoCloseable {
+abstract class  NativeClass implements AutoCloseable {
 
     // The pointer to the native object
     private Long nativeHandle_;
@@ -64,6 +64,11 @@ public abstract class NativeClass implements AutoCloseable {
      */
     abstract protected void nativeDelete(long handle);
 
+    /**
+     * Close.
+     *
+     * @throws Exception the exception
+     */
     @Override
     public void close() throws Exception {
         // Wrap the nativeDelete to close method so that the IDE will have a warning
@@ -71,7 +76,6 @@ public abstract class NativeClass implements AutoCloseable {
         if (nativeHandle_ == null) {
             return;
         }
-        System.out.println(this.getClass().getName());
         // Check the reference counter to avoid delete early
         if (ReferenceCounter.counter.containsKey(nativeHandle_)) {
             ReferenceCounter.counter.put(nativeHandle_, ReferenceCounter.counter.get(nativeHandle_) - 1);

@@ -49,11 +49,43 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeInfer
 
 /*
  * Class:     org_neuropod_Neuropod
- * Method:    nativeCreateTensorsFromMemory
- * Signature: (Ljava/util/Map;J)J
+ * Method:    nativeGetInputs
+ * Signature: (J)Ljava/util/List;
  */
-JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeCreateTensorsFromMemory
-  (JNIEnv *, jclass, jobject, jlong);
+JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputs
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_neuropod_Neuropod
+ * Method:    nativeGetOutputs
+ * Signature: (J)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetOutputs
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_neuropod_Neuropod
+ * Method:    nativeLoadModel
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_neuropod_Neuropod_nativeLoadModel
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_neuropod_Neuropod
+ * Method:    nativeGetName
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_neuropod_Neuropod_nativeGetName
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_neuropod_Neuropod
+ * Method:    nativeGetPlatform
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_neuropod_Neuropod_nativeGetPlatform
+  (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     org_neuropod_Neuropod

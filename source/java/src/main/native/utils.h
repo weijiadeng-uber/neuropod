@@ -47,5 +47,7 @@ std::string tensorTypeToString(TensorType type);
 // like a normal function: it won't interupt the normal program work flow.
 void throwJavaException(JNIEnv *env, const char *message);
 
+jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<TensorSpec> &specs);
+
 } // namespace jni
 } // namespace neuropod

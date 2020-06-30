@@ -6,7 +6,7 @@ import java.net.URL;
 /**
  * This class is responsible for loading jni library
  */
-public class LibraryLoader {
+class LibraryLoader {
     private static final String LIBNAME = "neuropod_jni";
 
     /**

@@ -25,6 +25,8 @@ private:
 public:
     // Insert a shared pointer to the manager
     static void put(std::shared_ptr<T> pointer);
+    // Get a shared pointer based on the pointer
+    static std::shared_ptr<T> get(int64_t handle);
     // Remove a shared pointer from the manager
     static void remove(std::shared_ptr<T> pointer);
     // Remove any shared pointer with a certain reference from the manager
@@ -33,6 +35,8 @@ public:
     static void check(int64_t handle);
     // Check the input handle exist in the manager or not, if not return false, otherwise return true
     static bool contains(int64_t handle);
+    // Clean up all data stored in the holder
+    static void reset();
 };
 
 template <typename T>

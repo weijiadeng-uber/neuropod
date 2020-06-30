@@ -2,6 +2,7 @@ namespace neuropod
 {
 namespace jni
 {
+
 template <typename T>
 void ReferenceManager<T>::put(std::shared_ptr<T> pointer)
 {
@@ -13,6 +14,13 @@ void ReferenceManager<T>::put(std::shared_ptr<T> pointer)
 }
 
 template <typename T>
+std::shared_ptr<T> ReferenceManager<T>::get(int64_t handle)
+{
+    check(handle);
+    return (*holder_)[handle].front();
+}
+
+template <typename T>
 void ReferenceManager<T>::remove(std::shared_ptr<T> pointer)
 {
     remove(reinterpret_cast<int64_t>(pointer.get()));
@@ -21,12 +29,14 @@ void ReferenceManager<T>::remove(std::shared_ptr<T> pointer)
 template <typename T>
 void ReferenceManager<T>::remove(int64_t handle)
 {
-    if (!contains(handle)) {
+    if (!contains(handle))
+    {
         return;
     }
     (*holder_)[handle].back().reset();
     (*holder_)[handle].pop_back();
-    if ((*holder_)[handle].empty()) {
+    if ((*holder_)[handle].empty())
+    {
         (*holder_).erase(handle);
     }
 }
@@ -38,7 +48,6 @@ void ReferenceManager<T>::check(int64_t handle)
     {
         throw std::runtime_error("Object is not allocated!");
     }
-
 }
 
 template <typename T>
@@ -57,6 +66,23 @@ bool ReferenceManager<T>::contains(int64_t handle)
         return false;
     }
     return true;
+}
+
+template <typename T>
+void ReferenceManager<T>::reset()
+{
+    if (!holder_)
+    {
+        return;
+    }
+    for (auto &entry : (*holder_))
+    {
+        for (auto &pointer : entry.second)
+        {
+            pointer.reset();
+        }
+    }
+    holder_.reset();
 }
 
 } // namespace jni

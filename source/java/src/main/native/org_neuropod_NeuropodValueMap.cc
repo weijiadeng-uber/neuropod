@@ -53,6 +53,27 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_NeuropodValueMap_nativeGetValue(JNIEnv
     return reinterpret_cast<long>(nullptr);
 }
 
+/*
+ * Class:     org_neuropod_NeuropodValueMap
+ * Method:    nativeAddEntry
+ * Signature: (Ljava/lang/String;JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_neuropod_NeuropodValueMap_nativeAddEntry
+        (JNIEnv * env, jclass, jstring key, jlong tensorHandle, jlong mapHandle) {
+    try
+    {
+        ReferenceManager<neuropod::NeuropodValueMap>::check(mapHandle);
+        auto neuropodValueMap = reinterpret_cast<neuropod::NeuropodValueMap *>(mapHandle);
+        ReferenceManager<neuropod::NeuropodValue>::check(tensorHandle);
+        (*neuropodValueMap)[toString(env, key)] = ReferenceManager<neuropod::NeuropodValue>::get(tensorHandle);
+    }
+    catch (const std::exception &e)
+    {
+        throwJavaException(env, e.what());
+    }
+
+}
+
 JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValueMap_nativeGetKeyList(JNIEnv *env, jclass, jlong nativeHandle)
 {
     try

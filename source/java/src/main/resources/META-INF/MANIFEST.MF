@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: .
+Created-By: 1.8.0_252 (AdoptOpenJDK)
+Main-Class: org.neuropod.TestMain
+

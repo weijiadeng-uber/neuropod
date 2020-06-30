@@ -1,5 +1,6 @@
 package org.neuropod;
 
+import java.nio.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class Neuropod extends NativeClass {
     }
 
     /**
-     * Instantiates a new Neuropod.
+     * Wrap a native handle.
      *
      * @param nativeHandle the native handle
      */
@@ -24,111 +25,156 @@ public class Neuropod extends NativeClass {
     }
 
     /**
-     * Instantiates a new Neuropod.
+     * Load a model from the file path and use default options
      *
-     * @param filePath the file path
+     * @param neuropodPath the neuropod path
      */
-    public Neuropod(String filePath) {
-        super.setNativeHandle(nativeNew(filePath));
+    public Neuropod(String neuropodPath) {
+        super.setNativeHandle(nativeNew(neuropodPath));
     }
 
     /**
-     * Instantiates a new Neuropod.
+     * Load a model from the file path and use provided options
      *
-     * @param filePath the file path
-     * @param options  the options
-     */
-    public Neuropod(String filePath, RuntimeOptions options) {
-        super.setNativeHandle(nativeNew(filePath, options.getNativeHandle()));
-    }
-
-    /**
-     * Infer neuropod value map.
-     *
-     * @param inputs the inputs
-     * @return the neuropod value map
+     * @param neuropodPath the neuropod path
+     * @param options      the options
      * @throws Exception the exception
      */
-    public NeuropodValueMap infer(Map<String, Object> inputs) throws Exception {
-        checkInputSpec(inputs);
-        NeuropodValueMap valueMap = new NeuropodValueMap(nativeCreateTensorsFromMemory(inputs, super.getNativeHandle()));
+    public Neuropod(String neuropodPath, RuntimeOptions options) throws Exception {
+        RuntimeOptions.RuntimeOptionsNative nativeOptions = options.toNative();
+        super.setNativeHandle(nativeNew(neuropodPath, nativeOptions.getNativeHandle()));
+        nativeOptions.close();
+    }
+
+
+    /**
+     * Perform the inference calculation on the input data
+     *
+     * @param inputs the input data
+     * @param shape  the shape of the input data
+     * @return the inference result
+     * @throws Exception the exception
+     */
+    public NeuropodValueMap infer(Map<String, Object> inputs, Map<String, List<Long>> shape) throws Exception {
+        checkInputSpec(inputs, shape);
+        NeuropodValueMap valueMap = new NeuropodValueMap();
+        for (String key:inputs.keySet()) {
+            List<Long> curDim = shape.get(key);
+            NeuropodValue value = NeuropodValue.create(inputs.get(key), shape.get(key), this);
+            valueMap.addEntry(key, value);
+            value.close();
+        }
         NeuropodValueMap ret = infer(valueMap);
         valueMap.close();
         return ret;
     }
 
     /**
-     * Infer neuropod value map.
+     * Gets name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return nativeGetName(super.getNativeHandle());
+    }
+
+    /**
+     * Gets platform.
+     *
+     * @return the platform
+     */
+    public String getPlatform() {
+        return nativeGetPlatform(super.getNativeHandle());
+    }
+
+    /**
+     * Perform the inference calculation on the input data
      *
      * @param inputs the inputs
-     * @return the neuropod value map
+     * @return the inference result
      */
     public synchronized NeuropodValueMap infer(NeuropodValueMap inputs) {
         return new NeuropodValueMap(nativeInfer(inputs.getNativeHandle(), super.getNativeHandle()));
     }
 
+    /**
+     * Gets inputs.
+     *
+     * @return the inputs
+     */
+    public List<TensorSpec> getInputs() {
+        return nativeGetInputs(super.getNativeHandle());
+    }
+
+    /**
+     * Gets outpus.
+     *
+     * @return the outpus
+     */
+    public List<TensorSpec> getOutpus() {
+        return nativeGetOutputs(super.getNativeHandle());
+    }
+
+    /**
+     * Load model.
+     */
+    public void loadModel() {
+        nativeLoadModel(super.getNativeHandle());
+    }
+
     // Check whether the input tensor names are the same with the model's requirement
-    private void checkInputSpec(Map<String, Object> inputs) throws NeuropodJNIException {
+    private void checkInputSpec(Map<String, Object> inputs, Map<String, List<Long>> shape) throws NeuropodJNIException {
         List<String> inputFeatureKeyList = nativeGetInputFeatureKeys(super.getNativeHandle());
-        List<DataType> inputFeatureDataTypes = nativeGetInputFeatureDataTypes(super.getNativeHandle());
+        List<TensorType> inputFeatureTensorTypes = nativeGetInputFeatureDataTypes(super.getNativeHandle());
         Iterator<String> keyIt = inputFeatureKeyList.iterator();
-        Iterator<DataType> typeIt = inputFeatureDataTypes.iterator();
+        Iterator<TensorType> typeIt = inputFeatureTensorTypes.iterator();
         while (keyIt.hasNext() && typeIt.hasNext()) {
             String currentKey = keyIt.next();
             if (!inputs.containsKey(currentKey)) {
                 throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' are not found in the input spec", currentKey));
             }
-            DataType type = typeIt.next();
-            if (type == DataType.STRING_TENSOR) {
-                if (!(inputs.get(currentKey) instanceof String)) {
-                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should be a string", currentKey));
-                }
-            } else {
-                if (!(inputs.get(currentKey) instanceof List)) {
-                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have an array as its input data", currentKey));
-                } else {
-                    List<?> feature = (List<?>) inputs.get(currentKey);
-                    if (feature.size() == 0) {
-                        throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a non emoty array as its input data", currentKey));
-                    }
-                    verifyType(feature.get(0), type, currentKey);
-                }
-            }
+            TensorType type = typeIt.next();
+            verifyType(inputs.get(currentKey), type, currentKey);
         }
     }
 
     // Check whether the input tensor has the same data type with the model's reuqirement
-    private void verifyType(Object obj, DataType type, String tensorKey) {
+    private void verifyType(Object obj, TensorType type, String tensorKey) {
         switch (type) {
             case FLOAT_TENSOR:
-                if (!(obj instanceof Float)) {
-                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a float list as its input data", tensorKey));
+                if (!(obj instanceof FloatBuffer)) {
+                    System.out.println(obj.getClass().getSimpleName());
+                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a float buffer as its input data", tensorKey));
                 }
                 break;
             case DOUBLE_TENSOR:
-                if (!(obj instanceof Double)) {
-                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a double list as its input data", tensorKey));
+                if (!(obj instanceof DoubleBuffer)) {
+                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a double buffer as its input data", tensorKey));
                 }
                 break;
             case INT32_TENSOR:
-                if (!(obj instanceof Integer)) {
-                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a int32 list as its input data", tensorKey));
+                if (!(obj instanceof IntBuffer)) {
+                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a int32 buffer as its input data", tensorKey));
                 }
                 break;
             case INT64_TENSOR:
-                if (!(obj instanceof Long)) {
-                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a int64 list as its input data", tensorKey));
+                if (!(obj instanceof LongBuffer)) {
+                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a int64 buffer as its input data", tensorKey));
+                }
+                break;
+            case STRING_TENSOR:
+                if (!(obj instanceof ByteBuffer)) {
+                    throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' should have a byte buffer as its input data", tensorKey));
                 }
                 break;
             default:
                 throw new NeuropodJNIException(String.format("Neuropod Error: Tensor name(s) '{%s}' has a unsupported data type", tensorKey));
         }
-
     }
 
     static private native List<String> nativeGetInputFeatureKeys(long handle);
 
-    static private native List<DataType> nativeGetInputFeatureDataTypes(long handle);
+    static private native List<TensorType> nativeGetInputFeatureDataTypes(long handle);
 
     static private native long nativeNew(String filePath);
 
@@ -136,8 +182,21 @@ public class Neuropod extends NativeClass {
 
     static private native long nativeInfer(long inputHanlde, long modelHandle);
 
-    static private native long nativeCreateTensorsFromMemory(Map<String, Object> data, long neuropodHandle);
+    static private native List<TensorSpec> nativeGetInputs(long modelHandle);
 
+    static private native List<TensorSpec> nativeGetOutputs(long modelHandle);
+
+    static private native void nativeLoadModel(long modelHandle);
+
+    static private native String nativeGetName(long modelHandle);
+
+    static private native String nativeGetPlatform(long modelHandle);
+
+    /**
+     * Native delete.
+     *
+     * @param handle the handle
+     */
     @Override
     protected native void nativeDelete(long handle);
 }

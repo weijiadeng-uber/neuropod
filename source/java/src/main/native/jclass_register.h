@@ -27,6 +27,29 @@ extern jclass    java_lang_Long;
 extern jmethodID java_lang_Long_valueOf;
 extern jmethodID java_lang_Long_longValue;
 
+extern jclass java_nio_IntBuffer;
+extern jmethodID java_nio_IntBuffer_allocate;
+extern jmethodID java_nio_IntBuffer_array;
+
+extern jclass java_nio_LongBuffer;
+extern jmethodID java_nio_LongBuffer_allocate;
+extern jmethodID java_nio_LongBuffer_array;
+
+extern jclass java_nio_FloatBuffer;
+extern jmethodID java_nio_FloatBuffer_allocate;
+extern jmethodID java_nio_FloatBuffer_array;
+
+extern jclass java_nio_DoubleBuffer;
+extern jmethodID java_nio_DoubleBuffer_allocate;
+extern jmethodID java_nio_DoubleBuffer_array;
+
+extern jclass org_neuropod_TensorSpec;
+extern jmethodID org_neuropod_TensorSpec_;
+
+extern jclass org_neuropod_Dimension;
+extern jmethodID org_neuropod_Dimension_value_;
+extern jmethodID org_neuropod_Dimension_symbol_;
+
 extern jclass org_neuropod_NeuropodJNIException;
 
-extern jclass org_neuropod_DataType;
+extern jclass org_neuropod_TensorType;

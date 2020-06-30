@@ -30,7 +30,8 @@ public class NeuropodValueMap extends NativeClass {
     /**
      * Equivalent to get method of java Map class, get the value from native unordered_map. This is a shallow copy,
      * the underlying native NeuropodValue is still owned by NeuropodValueMap. Once the NeuropodValueMap is closed,
-     * the returned NeuropodValue becomes a wild reference.
+     * the returned NeuropodValue becomes a wild r
+     * eference.
      * TODO: Fix the messy ownership
      *
      * @param key the key
@@ -81,6 +82,7 @@ public class NeuropodValueMap extends NativeClass {
      * Copy the data in native unordered_map to a java map. The data in NeuropodValue will be flattened.
      *
      * @return the map
+     * @throws Exception the exception
      */
     public Map<String, Object> toJavaMap() throws Exception {
         List<String> keys = getKeyList();
@@ -93,6 +95,11 @@ public class NeuropodValueMap extends NativeClass {
         return ret;
     }
 
+    /**
+     * Native delete.
+     *
+     * @param handle the handle
+     */
     @Override
     protected native void nativeDelete(long handle);
 

@@ -1,5 +1,6 @@
 package org.neuropod;
 
+import java.nio.FloatBuffer;
 import java.util.*;
 
 public class TestMain {
@@ -13,23 +14,37 @@ public class TestMain {
         Neuropod neuropod = new Neuropod(modelPath);
         Map<String, Object> inputs = new HashMap<>();
 
-        List<Float> elements1 = new ArrayList<>();
-        elements1.add(1.0f);
+        FloatBuffer elements1 = FloatBuffer.allocate(2);
+        elements1.put(1.0f);
+        elements1.put(3.0f);
+
         inputs.put("request_location_latitude",elements1);
 
-        List<Float> elements2 = new ArrayList<>();
-        elements2.add(2.0f);
+        FloatBuffer elements2 = FloatBuffer.allocate(2);
+        elements2.put(2.0f);
+        elements2.put(5.0f);
         inputs.put("request_location_longitude",elements2);
+
+        System.out.println(neuropod.getInputs());
+
+        System.out.println(neuropod.getOutpus());
+
 
         System.out.println("The input is");
         System.out.println(inputs);
 
-        NeuropodValueMap valueMap = neuropod.infer(inputs);
+        Map<String, List<Long>> shapes = new HashMap<>();
+        shapes.put("request_location_latitude", Arrays.asList(2L, 1L));
+        shapes.put("request_location_longitude", Arrays.asList(2L, 1L));
+
+
+
+        NeuropodValueMap valueMap = neuropod.infer(inputs, shapes);
 
         List<String> keyList = valueMap.getKeyList();
 
         System.out.println("The output is");
-        System.out.println(valueMap.toJavaMap());
+        System.out.println(((FloatBuffer)valueMap.toJavaMap().get("request_location_lat_plus_lng")).array()[0]);
         neuropod.close();
         // Double delete test
         neuropod.close();

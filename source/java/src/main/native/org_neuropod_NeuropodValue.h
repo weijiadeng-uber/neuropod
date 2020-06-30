@@ -10,9 +10,33 @@ extern "C" {
 /*
  * Class:     org_neuropod_NeuropodValue
  * Method:    nativeToList
- * Signature: (J)Ljava/util/List;
+ * Signature: (J)Ljava/lang/Object;
  */
 JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValue_nativeToList
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_neuropod_NeuropodValue
+ * Method:    nativeCreate
+ * Signature: (Ljava/lang/Object;Ljava/util/List;IJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_neuropod_NeuropodValue_nativeCreate
+  (JNIEnv *, jclass, jobject, jobject, jint, jlong);
+
+/*
+ * Class:     org_neuropod_NeuropodValue
+ * Method:    nativeGetDims
+ * Signature: (J)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValue_nativeGetDims
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_neuropod_NeuropodValue
+ * Method:    nativeGetTensorType
+ * Signature: (J)Lorg/neuropod/TensorType;
+ */
+JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValue_nativeGetTensorType
   (JNIEnv *, jclass, jlong);
 
 /*
