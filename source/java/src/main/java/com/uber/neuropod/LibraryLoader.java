@@ -40,20 +40,20 @@ class LibraryLoader {
         URL nativeLibraryUrl = LibraryLoader.class.getResource(path + jniLibName);
 
         try {
-            final File libfile = File.createTempFile(LIBNAME, ".lib");
-            libfile.deleteOnExit(); // just in case
+            final File libFile = File.createTempFile(LIBNAME, ".lib");
+            libFile.deleteOnExit(); // just in case
             System.out.println(nativeLibraryUrl);
             System.out.println(jniLibName);
             final InputStream in = nativeLibraryUrl.openStream();
-            final OutputStream out = new BufferedOutputStream(new FileOutputStream(libfile));
-            // Copy library file in jar to temperary file
+            final OutputStream out = new BufferedOutputStream(new FileOutputStream(libFile));
+            // Copy library file in jar to temporary file
             int len = 0;
             byte[] buffer = new byte[16384];
             while ((len = in.read(buffer)) > -1)
                 out.write(buffer, 0, len);
             out.close();
             in.close();
-            System.load(libfile.getAbsolutePath());
+            System.load(libFile.getAbsolutePath());
 
         } catch (IOException x) {
             System.out.println(x.getMessage());

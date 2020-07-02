@@ -16,7 +16,7 @@ public class Neuropod extends NativeClass {
      *
      * @param nativeHandle the native handle
      */
-    public Neuropod(long nativeHandle) {
+    protected Neuropod(long nativeHandle) {
         super(nativeHandle);
     }
 
@@ -51,11 +51,11 @@ public class Neuropod extends NativeClass {
      * @return the inference result
      * @throws Exception the exception
      */
-    public NeuropodValueMap infer(Map<String, Object> inputs, Map<String, List<Long>> shape) throws Exception {
-        checkInputSpec(inputs, shape);
+    public NeuropodValueMap infer(Map<String, Object> inputs, Map<String, long[]> shape) throws Exception {
+        checkInputSpec(inputs);
         NeuropodValueMap valueMap = new NeuropodValueMap();
         for (String key:inputs.keySet()) {
-            List<Long> curDim = shape.get(key);
+            long[] curDim = shape.get(key);
             NeuropodValue value = NeuropodValue.create(inputs.get(key), shape.get(key), this);
             valueMap.addEntry(key, value);
             value.close();
@@ -119,7 +119,7 @@ public class Neuropod extends NativeClass {
     }
 
     // Check whether the input tensor names are the same with the model's requirement
-    private void checkInputSpec(Map<String, Object> inputs, Map<String, List<Long>> shape) throws NeuropodJNIException {
+    private void checkInputSpec(Map<String, Object> inputs) throws NeuropodJNIException {
         List<String> inputFeatureKeyList = nativeGetInputFeatureKeys(super.getNativeHandle());
         List<TensorType> inputFeatureTensorTypes = nativeGetInputFeatureDataTypes(super.getNativeHandle());
         Iterator<String> keyIt = inputFeatureKeyList.iterator();

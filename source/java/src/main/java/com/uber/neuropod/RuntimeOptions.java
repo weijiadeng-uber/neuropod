@@ -2,28 +2,45 @@ package com.uber.neuropod;
 
 /**
  * An One to One mapping to RuntimeOptions native class.
- * TODO: Implement this class.
  */
-public class RuntimeOptions  {
+public class RuntimeOptions {
 
     /**
      * The Free memory every cycle.
+     * Internally, OPE(out-of-process execution) uses a shared memory allocator that reuses
+     * blocks of memory if possible. Therefore memory isn't necessarily allocated during each
+     * inference cycle as blocks may be reused.
+     * If freeMemoryEveryCycle is set, then unused shared memory will be freed every cycle
+     * This is useful for simple inference, but for code that is pipelined
+     * (e.g. generating inputs for cycle t + 1 during the inference of cycle t), this may not
+     * be desirable.
+     * If freeMemoryEveryCycle is false, the user is responsible for periodically calling
+     * neuropod.freeUnusedShmBlocks()
      */
     private boolean freeMemoryEveryCycle = true;
     /**
      * The Control queue name.
+     * This option can be used to run the neuropod in an existing worker process
+     * If this string is empty, a new worker will be started.
      */
     private String controlQueueName = "";
     /**
-     * The Visible device.
+     * The device to run this Neuropod on.
+     * Some devices are defined in the namespace above. For machines with more
+     * than 8 GPUs, passing in an index will also work (e.g. `9` for `GPU9`).
+     * To attempt to run the model on CPU, set this to `NeuropodDevice.CPU`
      */
-    private NeuropodDevice visibleDevice = NeuropodDevice.GPU0;
+    private int visibleDevice = NeuropodDevice.GPU0;
     /**
      * The Load model at construction.
+     * Sometimes, it's important to be able to instantiate a Neuropod without
+     * immediately loading the model. If this is set to `false`, the model will
+     * not be loaded until the `loadModel` method is called on the Neuropod.
      */
     private boolean loadModelAtConstruction = true;
     /**
      * The Disable shape and type checking.
+     * Whether or not to disable shape and type checking when running inference.
      */
     private boolean disableShapeAndTypeChecking = false;
 
@@ -83,7 +100,7 @@ public class RuntimeOptions  {
      *
      * @return the visible device
      */
-    public NeuropodDevice getVisibleDevice() {
+    public int getVisibleDevice() {
         return visibleDevice;
     }
 
@@ -92,7 +109,7 @@ public class RuntimeOptions  {
      *
      * @param visibleDevice the visible device
      */
-    public void setVisibleDevice(NeuropodDevice visibleDevice) {
+    public void setVisibleDevice(int visibleDevice) {
         this.visibleDevice = visibleDevice;
     }
 
@@ -140,6 +157,7 @@ public class RuntimeOptions  {
         static {
             LibraryLoader.load();
         }
+
         /**
          * Instantiates a new Runtime options native.
          *
@@ -149,8 +167,8 @@ public class RuntimeOptions  {
          * @param loadModelAtConstruction     the load model at construction
          * @param disableShapeAndTypeChecking the disable shape and type checking
          */
-        RuntimeOptionsNative(boolean freeMemoryEveryCycle, String controlQueueName, NeuropodDevice visibleDevice, boolean loadModelAtConstruction, boolean disableShapeAndTypeChecking) {
-            super(nativeCreate(freeMemoryEveryCycle, controlQueueName, visibleDevice.getValue(), loadModelAtConstruction, disableShapeAndTypeChecking));
+        RuntimeOptionsNative(boolean freeMemoryEveryCycle, String controlQueueName, int visibleDevice, boolean loadModelAtConstruction, boolean disableShapeAndTypeChecking) {
+            super(nativeCreate(freeMemoryEveryCycle, controlQueueName, visibleDevice, loadModelAtConstruction, disableShapeAndTypeChecking));
         }
 
         static private native long nativeCreate(boolean freeMemoeryEverySycle, String controlQueueName, int visibleDevice, boolean loadModelAtConstruction, boolean disableShapeAndTypeChecking);

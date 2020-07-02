@@ -4,14 +4,18 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <stdexcept>
+#include <shared_mutex>
+#include <mutex>
 
 namespace neuropod
 {
 namespace jni
 {
 
+
 template <typename T>
 using PointerMap = std::shared_ptr<std::unordered_map<int64_t, std::vector<std::shared_ptr<T>>>>;
+
 
 template <typename T>
 class ReferenceManager
@@ -21,6 +25,7 @@ class ReferenceManager
 private:
     // instantiated as nullptr to save memory for unused types
     static PointerMap<T> holder_;
+    static std::shared_timed_mutex sharedMutex_;
 
 public:
     // Insert a shared pointer to the manager
@@ -38,10 +43,6 @@ public:
     // Clean up all data stored in the holder
     static void reset();
 };
-
-template <typename T>
-PointerMap<T> ReferenceManager<T>::holder_ = nullptr;
-
 
 } // namespace jni
 } // namespace neuropod

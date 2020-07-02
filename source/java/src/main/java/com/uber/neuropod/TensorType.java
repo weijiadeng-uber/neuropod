@@ -7,10 +7,11 @@ import java.util.Map;
  * This is an one to one mapping to cpp TensorType enum
  */
 public enum TensorType {
+
+    // Supported Types
     /**
      * The Float tensor.
      */
-// Supported Types
     FLOAT_TENSOR(0),
     /**
      * Double tensor data type.
@@ -29,10 +30,10 @@ public enum TensorType {
      */
     STRING_TENSOR(4),
 
+    // Unsupported Types, the types below are not supported by the java api
     /**
      * The Int 8 tensor.
      */
-// UnSupported Types, the types below are not supported by the java api
     INT8_TENSOR(5),
     /**
      * Int 16 tensor data type.
@@ -55,7 +56,7 @@ public enum TensorType {
      */
     UINT64_TENSOR(10);
 
-    // These helper functions are for support int to enum and enum to int conversion
+    // These helper functions below are for supporting int to enum and enum to int conversion
     private int value;
     private static Map map = new HashMap<>();
 

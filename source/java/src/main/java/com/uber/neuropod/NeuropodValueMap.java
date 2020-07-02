@@ -17,7 +17,7 @@ public class NeuropodValueMap extends NativeClass {
      *
      * @param nativeHandle the native handle
      */
-    public NeuropodValueMap(long nativeHandle) {
+    protected NeuropodValueMap(long nativeHandle) {
         super(nativeHandle);
     }
 
@@ -29,11 +29,7 @@ public class NeuropodValueMap extends NativeClass {
     }
 
     /**
-     * Equivalent to get method of java Map class, get the value from native unordered_map. This is a shallow copy,
-     * the underlying native NeuropodValue is still owned by NeuropodValueMap. Once the NeuropodValueMap is closed,
-     * the returned NeuropodValue becomes a wild r
-     * eference.
-     * TODO: Fix the messy ownership
+     * Equivalent to get method of java Map class, get the value from native unordered_map.
      *
      * @param key the key
      * @return the value

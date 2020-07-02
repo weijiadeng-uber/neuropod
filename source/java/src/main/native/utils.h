@@ -42,5 +42,10 @@ void throwJavaException(JNIEnv *env, const char *message);
 
 jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<TensorSpec> &specs);
 
+template <typename T>
+jobject createDirectBuffer(JNIEnv *env, NeuropodTensor *tensor);
+
 } // namespace jni
 } // namespace neuropod
+
+#include "utils_impl.h"

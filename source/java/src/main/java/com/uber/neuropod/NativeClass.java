@@ -1,5 +1,9 @@
 package com.uber.neuropod;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * This is a base class for all class with a binding to native class.
  * Need to call close() method after usage to free memory in C++ side.
@@ -10,8 +14,10 @@ abstract class NativeClass implements AutoCloseable {
         LibraryLoader.load();
     }
 
+    private static Map<Long, AtomicInteger> counter = new ConcurrentHashMap<Long, AtomicInteger>();
+
     // The pointer to the native object
-    private Long nativeHandle_;
+    private Long nativeHandle;
 
     /**
      * Instantiates a new Native class.
@@ -22,15 +28,15 @@ abstract class NativeClass implements AutoCloseable {
     /**
      * Instantiates a new Native class.
      *
-     * @param nativeHandle the native handle
+     * @param handle the native handle
      */
-    public NativeClass(long nativeHandle) {
-        if (ReferenceCounter.counter.containsKey(nativeHandle_)) {
-            ReferenceCounter.counter.put(nativeHandle_, ReferenceCounter.counter.get(nativeHandle_) + 1);
+    protected NativeClass(long handle) {
+        if (counter.containsKey(handle)) {
+            counter.get(handle).incrementAndGet();
         } else {
-            ReferenceCounter.counter.put(nativeHandle_, 1);
+            counter.put(handle, new AtomicInteger(1));
         }
-        this.nativeHandle_ = nativeHandle;
+        this.nativeHandle = handle;
     }
 
     /**
@@ -39,10 +45,10 @@ abstract class NativeClass implements AutoCloseable {
      * @return the native handle
      */
     protected long getNativeHandle() {
-        if (nativeHandle_ == null) {
+        if (nativeHandle == null) {
             throw new NeuropodJNIException("Object is not allocated");
         }
-        return nativeHandle_;
+        return nativeHandle;
     }
 
     /**
@@ -51,13 +57,30 @@ abstract class NativeClass implements AutoCloseable {
      * @param handle the handle
      */
     protected void setNativeHandle(long handle) {
-        nativeHandle_ = handle;
-        if (ReferenceCounter.counter.containsKey(nativeHandle_)) {
-            ReferenceCounter.counter.put(nativeHandle_, ReferenceCounter.counter.get(nativeHandle_) + 1);
-        } else {
-            ReferenceCounter.counter.put(nativeHandle_, 1);
-        }
+        decreaseThisCount();
+        increaseCount(handle);
+        this.nativeHandle = handle;
+    }
 
+    private void increaseCount(long handle) {
+        if (counter.containsKey(handle)) {
+            counter.get(handle).incrementAndGet();
+        } else {
+            counter.put(handle, new AtomicInteger(1));
+        }
+    }
+
+    private void decreaseThisCount() {
+        if (nativeHandle == null) {
+            return;
+        }
+        // Check the reference counter to avoid delete early
+        if (counter.containsKey(nativeHandle)) {
+            int val = counter.get(nativeHandle).decrementAndGet();
+            if (val == 0) {
+                counter.remove(nativeHandle);
+            }
+        }
     }
 
     /**
@@ -71,17 +94,7 @@ abstract class NativeClass implements AutoCloseable {
     public void close() throws Exception {
         // Wrap the nativeDelete to close method so that the IDE will have a warning
         // if the object is not deleted, and will be auto deleted in a try catch block.
-        if (nativeHandle_ == null) {
-            return;
-        }
-        // Check the reference counter to avoid delete early
-        if (ReferenceCounter.counter.containsKey(nativeHandle_)) {
-            ReferenceCounter.counter.put(nativeHandle_, ReferenceCounter.counter.get(nativeHandle_) - 1);
-            if (ReferenceCounter.counter.get(nativeHandle_) == 0) {
-                ReferenceCounter.counter.remove(nativeHandle_);
-                nativeDelete(nativeHandle_);
-            }
-        }
-        nativeHandle_ = null;
+        decreaseThisCount();
+        nativeHandle = null;
     }
 }

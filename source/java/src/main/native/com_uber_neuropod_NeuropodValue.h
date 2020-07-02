@@ -9,26 +9,42 @@ extern "C" {
 #endif
 /*
  * Class:     com_uber_neuropod_NeuropodValue
- * Method:    nativeToList
- * Signature: (J)Ljava/lang/Object;
+ * Method:    nativeGetBuffer
+ * Signature: (J)Ljava/nio/ByteBuffer;
  */
-JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValue_nativeToList
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValue_nativeGetBuffer
   (JNIEnv *, jclass, jlong);
 
 /*
  * Class:     com_uber_neuropod_NeuropodValue
- * Method:    nativeCreate
- * Signature: (Ljava/lang/Object;Ljava/util/List;IJ)J
+ * Method:    nativeToStringList
+ * Signature: (J)Ljava/lang/Object;
  */
-JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodValue_nativeCreate
-  (JNIEnv *, jclass, jobject, jobject, jint, jlong);
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValue_nativeToStringList
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_uber_neuropod_NeuropodValue
+ * Method:    nativeCreateStringTensor
+ * Signature: (Ljava/util/List;[JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodValue_nativeCreateStringTensor
+  (JNIEnv *, jclass, jobject, jlongArray, jlong);
+
+/*
+ * Class:     com_uber_neuropod_NeuropodValue
+ * Method:    nativeAllocate
+ * Signature: ([JIJ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodValue_nativeAllocate
+  (JNIEnv *, jclass, jlongArray, jint, jlong);
 
 /*
  * Class:     com_uber_neuropod_NeuropodValue
  * Method:    nativeGetDims
- * Signature: (J)Ljava/util/List;
+ * Signature: (J)[J
  */
-JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValue_nativeGetDims
+JNIEXPORT jlongArray JNICALL Java_com_uber_neuropod_NeuropodValue_nativeGetDims
   (JNIEnv *, jclass, jlong);
 
 /*
@@ -37,6 +53,14 @@ JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValue_nativeGetDims
  * Signature: (J)Lcom/uber/neuropod/TensorType;
  */
 JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValue_nativeGetTensorType
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_uber_neuropod_NeuropodValue
+ * Method:    nativeGetNumberOfElements
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodValue_nativeGetNumberOfElements
   (JNIEnv *, jclass, jlong);
 
 /*
