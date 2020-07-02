@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 import java.io.Serializable;
 import java.nio.*;
@@ -31,14 +31,6 @@ public class NeuropodValue extends NativeClass implements Serializable {
         return nativeGetDims(super.getNativeHandle());
     }
 
-    /**
-     * Create neuropod value.
-     *
-     * @param data  the data
-     * @param shape the shape
-     * @param model the model
-     * @return the neuropod value
-     */
     static NeuropodValue create(Object data,
                                        List<Long> shape,
                                        Neuropod model) {
@@ -69,12 +61,12 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Allocate a neuropod value and copy java data to it based on the allocator of certain model.
+     * Allocate a neuropod tensor and copy java data to it based on the allocator of certain model.
      *
      * @param data  the data
      * @param shape the shape
      * @param model the neuropod model to allcoate the NeuropodValue in the cpp side
-     * @return the al
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(IntBuffer data,
                                        List<Long> shape,
@@ -84,12 +76,12 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on the allocator of certain model.
      *
      * @param data  the data
      * @param shape the shape
-     * @param model the model
-     * @return the neuropod value
+     * @param model the neuropod model to allcoate the NeuropodValue in the cpp side
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(LongBuffer data,
                                        List<Long> shape,
@@ -99,12 +91,12 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on the allocator of certain model.
      *
      * @param data  the data
      * @param shape the shape
-     * @param model the model
-     * @return the neuropod value
+     * @param model the neuropod model to allcoate the NeuropodValue in the cpp side
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(FloatBuffer data,
                                        List<Long> shape,
@@ -114,12 +106,12 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on the allocator of certain model.
      *
      * @param data  the data
      * @param shape the shape
-     * @param model the model
-     * @return the neuropod value
+     * @param model the neuropod model to allcoate the NeuropodValue in the cpp side
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(DoubleBuffer data,
                                        List<Long> shape,
@@ -130,12 +122,12 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on the allocator of certain model.
      *
      * @param data  the data
      * @param shape the shape
-     * @param model the model
-     * @return the neuropod value
+     * @param model the neuropod model to allcoate the NeuropodValue in the cpp side
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(List<String> data,
                                        List<Long> shape,
@@ -145,11 +137,11 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on default allocator.
      *
      * @param data  the data
      * @param shape the shape
-     * @return the neuropod value
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(IntBuffer data,
                                        List<Long> shape) {
@@ -157,11 +149,11 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on default allocator.
      *
      * @param data  the data
      * @param shape the shape
-     * @return the neuropod value
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(FloatBuffer data,
                                        List<Long> shape) {
@@ -169,11 +161,11 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on default allocator.
      *
      * @param data  the data
      * @param shape the shape
-     * @return the neuropod value
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(DoubleBuffer data,
                                        List<Long> shape) {
@@ -181,11 +173,11 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on default allocator.
      *
      * @param data  the data
      * @param shape the shape
-     * @return the neuropod value
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(LongBuffer data,
                                        List<Long> shape) {
@@ -193,11 +185,11 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Create neuropod value.
+     * Allocate a neuropod tensor and copy java data to it based on default allocator.
      *
      * @param data  the data
      * @param shape the shape
-     * @return the neuropod value
+     * @return the allocated neuropod tensor
      */
     static public NeuropodValue create(List<String> data,
                                        List<Long> shape) {
@@ -229,8 +221,9 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * Copy all the data of the NeuropodValue and flatten it to a java list.
-     * Does not apply for string tensor.
+     * Copy all the data of the NeuropodValue and flatten it to a java object
+     * The java type of the jave object is based on the tensor type.
+     * It is [Type]Buffer for non string tensors, List[String] for string tensors.
      *
      * @return the list
      */
@@ -239,7 +232,7 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * To int list int buffer.
+     * Copy all the data of the NeuropodValue and flatten it to an int buffer.
      *
      * @return the int buffer
      */
@@ -252,7 +245,7 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * To long list long buffer.
+     * Copy all the data of the NeuropodValue and flatten it to a long buffer.
      *
      * @return the long buffer
      */
@@ -265,7 +258,7 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * To float list float buffer.
+     * Copy all the data of the NeuropodValue and flatten it to a float buffer.
      *
      * @return the float buffer
      */
@@ -278,7 +271,7 @@ public class NeuropodValue extends NativeClass implements Serializable {
     }
 
     /**
-     * To double list double buffer.
+     * Copy all the data of the NeuropodValue and flatten it to a double buffer.
      *
      * @return the double buffer
      */
@@ -290,8 +283,63 @@ public class NeuropodValue extends NativeClass implements Serializable {
         return (DoubleBuffer) nativeToList(super.getNativeHandle());
     }
 
+    @java.lang.Override
+    public java.lang.String toString() {
+        Object list = toList();
+        TensorType type = getTensorType();
+        StringBuilder values = new StringBuilder();
+        String dims = "" + getDims();
+        switch (type) {
+            case FLOAT_TENSOR: {
+                float[] array = ((FloatBuffer) list).array();
+                values.append("[");
+                for (float v : array) {
+                    values.append(v);
+                    values.append(",");
+                }
+                values.append("]");
+                break;
+            }
+            case DOUBLE_TENSOR: {
+                double[] array = ((DoubleBuffer) list).array();
+                values.append("[");
+                for (double v : array) {
+                    values.append(v);
+                    values.append(",");
+                }
+                values.append("]");
+                break;
+            }
+            case INT32_TENSOR:{
+                int[] array = ((IntBuffer) list).array();
+                values.append("[");
+                for (int v : array) {
+                    values.append(v);
+                    values.append(",");
+                }
+                values.append("]");
+                break;
+            }
+            case INT64_TENSOR: {
+                long[] array = ((LongBuffer) list).array();
+                values.append("[");
+                for (long v : array) {
+                    values.append(v);
+                    values.append(",");
+                }
+                values.append("]");
+                break;
+            }
+            case STRING_TENSOR:
+                values.append(list);
+            default:
+                return "NeuropodValue{unsupported tensor type}";
+        }
+        return String.format("NeuropodValue{value: %s, dims: %s}", values.toString(),dims);
+    }
+
     /**
-     * To string list list.
+     * Copy all the data of the NeuropodValue and flatten it to a list of string.
      *
      * @return the list
      */
@@ -312,12 +360,6 @@ public class NeuropodValue extends NativeClass implements Serializable {
 
     static native private TensorType nativeGetTensorType(long modelHandle) throws NeuropodJNIException;
 
-
-    /**
-     * Native delete.
-     *
-     * @param handle the handle
-     */
     @Override
     protected native void nativeDelete(long handle);
 }

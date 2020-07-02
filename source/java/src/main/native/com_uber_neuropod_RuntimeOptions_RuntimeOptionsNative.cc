@@ -1,4 +1,4 @@
-#include "org_neuropod_RuntimeOptions_RuntimeOptionsNative.h"
+#include "com_uber_neuropod_RuntimeOptions_RuntimeOptionsNative.h"
 
 #include "jclass_register.h"
 #include "reference_manager.h"
@@ -16,7 +16,7 @@
 using namespace neuropod::jni;
 
 
-JNIEXPORT jlong JNICALL Java_org_neuropod_RuntimeOptions_00024RuntimeOptionsNative_nativeCreate
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_RuntimeOptions_00024RuntimeOptionsNative_nativeCreate
         (JNIEnv *env, jclass, jboolean freeMemoryEveryCycle, jstring jControlQueueName, jint visibleDevice,
          jboolean loadModelAtConstruction, jboolean disableShapeAndTypeChecking) {
     try {
@@ -36,7 +36,7 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_RuntimeOptions_00024RuntimeOptionsNati
 
 }
 
-JNIEXPORT void JNICALL Java_org_neuropod_RuntimeOptions_00024RuntimeOptionsNative_nativeDelete
+JNIEXPORT void JNICALL Java_com_uber_neuropod_RuntimeOptions_00024RuntimeOptionsNative_nativeDelete
         (JNIEnv *, jobject, jlong handle) {
     ReferenceManager<neuropod::RuntimeOptions>::remove(handle);
 }

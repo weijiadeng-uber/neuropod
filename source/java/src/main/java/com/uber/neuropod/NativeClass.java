@@ -1,11 +1,14 @@
-package org.neuropod;
-
-import java.sql.Ref;
+package com.uber.neuropod;
 
 /**
- * This is a base class for all class with a binding to native class
+ * This is a base class for all class with a binding to native class.
+ * Need to call close() method after usage to free memory in C++ side.
  */
-abstract class  NativeClass implements AutoCloseable {
+abstract class NativeClass implements AutoCloseable {
+    // Load native library
+    static {
+        LibraryLoader.load();
+    }
 
     // The pointer to the native object
     private Long nativeHandle_;
@@ -64,11 +67,6 @@ abstract class  NativeClass implements AutoCloseable {
      */
     abstract protected void nativeDelete(long handle);
 
-    /**
-     * Close.
-     *
-     * @throws Exception the exception
-     */
     @Override
     public void close() throws Exception {
         // Wrap the nativeDelete to close method so that the IDE will have a warning

@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 import java.io.*;
 import java.net.URL;
@@ -32,15 +32,14 @@ class LibraryLoader {
 
     private static boolean loadEmbeddedLibrary() {
         // TODO: Contains os arch and os name info in path, compile binaries for multiple platforms
-        // TODO: Also Include neuropod library in jar file or static link it into neuropod jni library
-        // TODO: Improve the loading speed
+        // TODO: Also Include neuropod library and corresponding backend library (like tensorflow or pytorch)
+        // in jar file or static link it into neuropod jni library
         final String jniLibName = System.mapLibraryName(LIBNAME);
         String path = "/";
 
-        URL nativeLibraryUrl = TestMain.class.getResource(path + jniLibName);
+        URL nativeLibraryUrl = LibraryLoader.class.getResource(path + jniLibName);
 
         try {
-
             final File libfile = File.createTempFile(LIBNAME, ".lib");
             libfile.deleteOnExit(); // just in case
             System.out.println(nativeLibraryUrl);

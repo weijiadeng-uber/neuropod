@@ -1,11 +1,12 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 /**
  * The type Dimension.
  */
 public class Dimension {
     /**
-     * The Value.
+     * The Value. -1 means non/null, any value is OK
+     * -2 menas this is a symbol
      */
     long value;
     /**
@@ -14,7 +15,7 @@ public class Dimension {
     String symbol;
 
     /**
-     * Instantiates a new Dimension.
+     * Instantiates a new Dimension by given value
      *
      * @param value the value
      */
@@ -23,7 +24,7 @@ public class Dimension {
     }
 
     /**
-     * Instantiates a new Dimension.
+     * Instantiates a new Dimension by given symbol
      *
      * @param symbol the symbol
      */
@@ -50,11 +51,6 @@ public class Dimension {
         return symbol;
     }
 
-    /**
-     * To string string.
-     *
-     * @return the string
-     */
     @Override
     public String toString() {
         if (value >= 0) {

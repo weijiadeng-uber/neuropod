@@ -18,13 +18,6 @@ std::string toString(JNIEnv *env, jstring target);
 // Get the default input dim from the tensor spec. -2 and -1 are treated as 1.
 std::vector<int64_t> getDefaultInputDim(const TensorSpec &tensorSpec);
 
-// Copy the data in java memory to tensor
-std::shared_ptr<NeuropodValue> createTesnorFromJavaMemory(std::shared_ptr<NeuropodTensorAllocator> allocator,
-                                                          JNIEnv *                                 env,
-                                                          jobject                                  value,
-                                                          TensorType                               type,
-                                                          const std::vector<int64_t> &             dims);
-
 // A wrapper for env->FindClass, will throw a cpp exception if the find fails.
 jclass findClass(JNIEnv *env, const char *name);
 

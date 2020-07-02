@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import java.util.Map;
  * Method after using this class
  */
 public class NeuropodValueMap extends NativeClass {
+
     /**
      * Instantiates a new Neuropod value map from existing cpp handle.
      *
@@ -95,12 +96,22 @@ public class NeuropodValueMap extends NativeClass {
         return ret;
     }
 
-    /**
-     * Native delete.
-     *
-     * @param handle the handle
-     */
-    @Override
+    @java.lang.Override
+    public java.lang.String toString() {
+        List<String> keys = getKeyList();
+        StringBuilder res = new StringBuilder();
+        res.append("{");
+        for (String key:keys) {
+            NeuropodValue value = getValue(key);
+            res.append(key);
+            res.append("=");
+            res.append(value);
+            res.append(",");
+        }
+        res.append("}");
+        return res.toString();
+    }
+
     protected native void nativeDelete(long handle);
 
     static private native long nativeNew() throws NeuropodJNIException;

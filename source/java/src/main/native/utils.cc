@@ -17,7 +17,7 @@ namespace neuropod
 namespace jni
 {
 
-const std::string NEUROPOD_JNI_EXCEPTION = "org/neuropod/NeuropodJNIException";
+const std::string TENSOR_TYPE = "Lcom/uber/neuropod/TensorType;";
 
 std::string toString(JNIEnv *env, jstring target)
 {
@@ -42,83 +42,6 @@ std::vector<int64_t> getDefaultInputDim(const TensorSpec &tensorSpec)
         }
     }
     return ret;
-}
-
-std::shared_ptr<NeuropodValue> createTesnorFromJavaMemory(std::shared_ptr<NeuropodTensorAllocator> allocator,
-                                                          JNIEnv *                                 env,
-                                                          jobject                                  value,
-                                                          TensorType                               type,
-                                                          const std::vector<int64_t> &             dims)
-{
-    auto  tensor = allocator->allocate_tensor(dims, type);
-    jlong size   = env->CallIntMethod(value, java_util_ArrayList_size);
-    // Here we copy the data twice: First from java list to cpp vector, then the neuropod copy the vector to
-    // its own data type. This is not very efficient.
-    switch (type)
-    {
-    case FLOAT_TENSOR: {
-        std::vector<float> elementList(size);
-        for (int i = 0; i < size; i++)
-        {
-            jobject element = env->CallObjectMethod(value, java_util_ArrayList_get, i);
-            elementList[i]  = env->CallFloatMethod(element, java_lang_Float_floatValue);
-            env->DeleteLocalRef(element);
-        }
-        auto floatTensor = tensor->as_typed_tensor<float>();
-        floatTensor->copy_from(elementList);
-        break;
-    }
-    case DOUBLE_TENSOR: {
-        std::vector<double> elementList(size);
-        for (int i = 0; i < size; i++)
-        {
-            jobject element = env->CallObjectMethod(value, java_util_ArrayList_get, i);
-            elementList[i]  = env->CallDoubleMethod(element, java_lang_Double_doubleValue);
-            env->DeleteLocalRef(element);
-        }
-        auto doubleTensor = tensor->as_typed_tensor<double>();
-        doubleTensor->copy_from(elementList);
-        break;
-    }
-    case INT32_TENSOR: {
-        std::vector<int32_t> elementList(size);
-        for (int i = 0; i < size; i++)
-        {
-            jobject element = env->CallObjectMethod(value, java_util_ArrayList_get, i);
-            elementList[i]  = env->CallIntMethod(element, java_lang_Integer_intValue);
-            env->DeleteLocalRef(element);
-        }
-        auto int32Tensor = tensor->as_typed_tensor<int32_t>();
-        int32Tensor->copy_from(elementList);
-        break;
-    }
-    case INT64_TENSOR: {
-        std::vector<int64_t> elementList(size);
-        for (int i = 0; i < size; i++)
-        {
-            jobject element = env->CallObjectMethod(value, java_util_ArrayList_get, i);
-            elementList[i]  = env->CallLongMethod(element, java_lang_Long_longValue);
-            env->DeleteLocalRef(element);
-        }
-        auto int64Tensor = tensor->as_typed_tensor<int64_t>();
-        int64Tensor->copy_from(elementList);
-        break;
-    }
-    case STRING_TENSOR: {
-        std::vector<std::string> elementList(size);
-        for (int i = 0; i < size; i++)
-        {
-            elementList[i] =
-                toString(env, static_cast<jstring>(env->CallObjectMethod(value, java_util_ArrayList_get, i)));
-        }
-        auto stringTensor = tensor->as_typed_tensor<std::string>();
-        stringTensor->copy_from(elementList);
-        break;
-    }
-    default:
-        throw std::runtime_error(std::string("Unsupported tensor type: ") + tensorTypeToString(type));
-    }
-    return tensor;
 }
 
 jclass findClass(JNIEnv *env, const char *name)
@@ -159,7 +82,7 @@ jmethodID getStaticMethodID(JNIEnv *env, jclass clazz, const char *name, const c
 
 jobject getFieldObject(JNIEnv *env, jclass dataTypes, std::string fieldName)
 {
-    jfieldID field = env->GetStaticFieldID(dataTypes, fieldName.c_str(), "Lorg/neuropod/TensorType;");
+    jfieldID field = env->GetStaticFieldID(dataTypes, fieldName.c_str(), TENSOR_TYPE.c_str());
     if (reinterpret_cast<jlong>(field) == 0)
     {
         throw std::runtime_error(std::string("Field not found: ") + getJclassName(env, dataTypes) + fieldName);
@@ -178,21 +101,21 @@ std::string tensorTypeToString(TensorType type)
 
 void throwJavaException(JNIEnv *env, const char* message)
 {
-    env->ThrowNew(org_neuropod_NeuropodJNIException, message);
+    env->ThrowNew(com_uber_neuropod_NeuropodJNIException, message);
 }
 
 jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<TensorSpec> &specs) {
     jobject ret       = env->NewObject(java_util_ArrayList, java_util_ArrayList_, specs.size());
     for (const auto &tensorSpec : specs)
     {
-        auto type = getFieldObject(env, org_neuropod_TensorType, tensorTypeToString(tensorSpec.type).c_str());
+        auto type = getFieldObject(env, com_uber_neuropod_TensorType, tensorTypeToString(tensorSpec.type).c_str());
         jstring name = env->NewStringUTF(tensorSpec.name.c_str());
         jobject dims       = env->NewObject(java_util_ArrayList, java_util_ArrayList_, tensorSpec.dims.size());
         for (const auto& dim:tensorSpec.dims) {
             // Dim is symbol
             if (dim.value == -2) {
                 jstring symbol = env->NewStringUTF(dim.symbol.c_str());
-                jobject javaDim       = env->NewObject(org_neuropod_Dimension, org_neuropod_Dimension_symbol_, symbol);
+                jobject javaDim       = env->NewObject(com_uber_neuropod_Dimension, com_uber_neuropod_Dimension_symbol_, symbol);
                 env->CallBooleanMethod(
                         dims,
                         java_util_ArrayList_add,
@@ -200,7 +123,7 @@ jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<TensorSpec> &specs) 
                 env->DeleteLocalRef(javaDim);
                 env->DeleteLocalRef(symbol);
             } else {
-                jobject javaDim       = env->NewObject(org_neuropod_Dimension, org_neuropod_Dimension_value_, dim.value);
+                jobject javaDim       = env->NewObject(com_uber_neuropod_Dimension, com_uber_neuropod_Dimension_value_, dim.value);
                 env->CallBooleanMethod(
                         dims,
                         java_util_ArrayList_add,
@@ -208,7 +131,7 @@ jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<TensorSpec> &specs) 
                 env->DeleteLocalRef(javaDim);
             }
         }
-        jobject javaTensorSpec       = env->NewObject(org_neuropod_TensorSpec, org_neuropod_TensorSpec_, name, type, dims);
+        jobject javaTensorSpec       = env->NewObject(com_uber_neuropod_TensorSpec, com_uber_neuropod_TensorSpec_, name, type, dims);
         env->CallBooleanMethod(ret, java_util_ArrayList_add, javaTensorSpec);
         env->DeleteLocalRef(name);
         env->DeleteLocalRef(dims);

@@ -43,13 +43,13 @@ extern jclass java_nio_DoubleBuffer;
 extern jmethodID java_nio_DoubleBuffer_allocate;
 extern jmethodID java_nio_DoubleBuffer_array;
 
-extern jclass org_neuropod_TensorSpec;
-extern jmethodID org_neuropod_TensorSpec_;
+extern jclass com_uber_neuropod_TensorSpec;
+extern jmethodID com_uber_neuropod_TensorSpec_;
 
-extern jclass org_neuropod_Dimension;
-extern jmethodID org_neuropod_Dimension_value_;
-extern jmethodID org_neuropod_Dimension_symbol_;
+extern jclass com_uber_neuropod_Dimension;
+extern jmethodID com_uber_neuropod_Dimension_value_;
+extern jmethodID com_uber_neuropod_Dimension_symbol_;
 
-extern jclass org_neuropod_NeuropodJNIException;
+extern jclass com_uber_neuropod_NeuropodJNIException;
 
-extern jclass org_neuropod_TensorType;
+extern jclass com_uber_neuropod_TensorType;

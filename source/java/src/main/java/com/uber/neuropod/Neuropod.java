@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 import java.nio.*;
 import java.util.Iterator;
@@ -6,14 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is an one to one mapping to cpp NeuropodValue type.Need to manually call close
+ * This class is an one to one mapping to cpp NeuropodValue type. Need to manually call close
  * Method after using this class
  */
 public class Neuropod extends NativeClass {
-
-    static {
-        LibraryLoader.load();
-    }
 
     /**
      * Wrap a native handle.
@@ -98,7 +94,7 @@ public class Neuropod extends NativeClass {
     }
 
     /**
-     * Gets inputs.
+     * Gets input tensor specs
      *
      * @return the inputs
      */
@@ -107,7 +103,7 @@ public class Neuropod extends NativeClass {
     }
 
     /**
-     * Gets outpus.
+     * Gets outpus tnesor specs
      *
      * @return the outpus
      */

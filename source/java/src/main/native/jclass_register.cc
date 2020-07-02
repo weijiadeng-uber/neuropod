@@ -51,16 +51,16 @@ jclass java_nio_DoubleBuffer;
 jmethodID java_nio_DoubleBuffer_allocate;
 jmethodID java_nio_DoubleBuffer_array;
 
-jclass org_neuropod_TensorSpec;
-jmethodID org_neuropod_TensorSpec_;
+jclass com_uber_neuropod_TensorSpec;
+jmethodID com_uber_neuropod_TensorSpec_;
 
-jclass org_neuropod_Dimension;
-jmethodID org_neuropod_Dimension_value_;
-jmethodID org_neuropod_Dimension_symbol_;
+jclass com_uber_neuropod_Dimension;
+jmethodID com_uber_neuropod_Dimension_value_;
+jmethodID com_uber_neuropod_Dimension_symbol_;
 
-jclass org_neuropod_NeuropodJNIException;
+jclass com_uber_neuropod_NeuropodJNIException;
 
-jclass org_neuropod_TensorType;
+jclass com_uber_neuropod_TensorType;
 
 jint JNI_VERSION = JNI_VERSION_1_8;
 
@@ -78,8 +78,8 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
 
     // Move this exception class out of try catch block to avoid unexpected error when throw a java exception and the
     // exception type is wrong
-    org_neuropod_NeuropodJNIException =
-        static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/NeuropodJNIException")));
+    com_uber_neuropod_NeuropodJNIException =
+        static_cast<jclass>(env->NewGlobalRef(findClass(env, "com/uber/neuropod/NeuropodJNIException")));
     try
     {
         java_util_Map     = static_cast<jclass>(env->NewGlobalRef(findClass(env, "java/util/Map")));
@@ -122,14 +122,14 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved)
         java_nio_DoubleBuffer_array = getMethodID(env, java_nio_DoubleBuffer, "array", "()Ljava/lang/Object;");
         java_nio_DoubleBuffer_allocate = getStaticMethodID(env, java_nio_DoubleBuffer, "allocate", "(I)Ljava/nio/DoubleBuffer;");
 
-        org_neuropod_TensorSpec = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/TensorSpec")));
-        org_neuropod_TensorSpec_ = getMethodID(env, org_neuropod_TensorSpec, "<init>", "(Ljava/lang/String;Lorg/neuropod/TensorType;Ljava/util/List;)V");
+        com_uber_neuropod_TensorSpec = static_cast<jclass>(env->NewGlobalRef(findClass(env, "com/uber/neuropod/TensorSpec")));
+        com_uber_neuropod_TensorSpec_ = getMethodID(env, com_uber_neuropod_TensorSpec, "<init>", "(Ljava/lang/String;Lcom/uber/neuropod/TensorType;Ljava/util/List;)V");
 
-        org_neuropod_Dimension = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/Dimension")));;
-        org_neuropod_Dimension_value_ = getMethodID(env, org_neuropod_Dimension, "<init>", "(J)V");
-        org_neuropod_Dimension_symbol_ = getMethodID(env, org_neuropod_Dimension, "<init>", "(Ljava/lang/String;)V");
+        com_uber_neuropod_Dimension = static_cast<jclass>(env->NewGlobalRef(findClass(env, "com/uber/neuropod/Dimension")));;
+        com_uber_neuropod_Dimension_value_ = getMethodID(env, com_uber_neuropod_Dimension, "<init>", "(J)V");
+        com_uber_neuropod_Dimension_symbol_ = getMethodID(env, com_uber_neuropod_Dimension, "<init>", "(Ljava/lang/String;)V");
 
-        org_neuropod_TensorType = static_cast<jclass>(env->NewGlobalRef(findClass(env, "org/neuropod/TensorType")));
+        com_uber_neuropod_TensorType = static_cast<jclass>(env->NewGlobalRef(findClass(env, "com/uber/neuropod/TensorType")));
     }
     catch (const std::exception &e)
     {
@@ -160,8 +160,8 @@ void JNI_OnUnload(JavaVM *vm, void *reserved)
     env->DeleteGlobalRef(java_nio_DoubleBuffer);
 
 
-    env->DeleteGlobalRef(org_neuropod_NeuropodJNIException);
-    env->DeleteGlobalRef(org_neuropod_TensorType);
+    env->DeleteGlobalRef(com_uber_neuropod_NeuropodJNIException);
+    env->DeleteGlobalRef(com_uber_neuropod_TensorType);
     neuropod::jni::ReferenceManager<neuropod::Neuropod>::reset();
     neuropod::jni::ReferenceManager<neuropod::NeuropodValue>::reset();
     neuropod::jni::ReferenceManager<neuropod::NeuropodValueMap>::reset();

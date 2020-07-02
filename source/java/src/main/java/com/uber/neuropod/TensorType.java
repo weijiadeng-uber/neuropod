@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 import java.util.HashMap;
 import java.util.Map;

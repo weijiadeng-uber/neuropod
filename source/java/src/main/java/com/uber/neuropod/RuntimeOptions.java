@@ -1,10 +1,11 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 /**
  * An One to One mapping to RuntimeOptions native class.
  * TODO: Implement this class.
  */
 public class RuntimeOptions  {
+
     /**
      * The Free memory every cycle.
      */
@@ -132,9 +133,13 @@ public class RuntimeOptions  {
     }
 
     /**
-     * The type Runtime options native.
+     * The corresponding native type for RuntimeOptions. Is not exposed to user, only used inside other public
+     * method.
      */
     static class RuntimeOptionsNative extends NativeClass {
+        static {
+            LibraryLoader.load();
+        }
         /**
          * Instantiates a new Runtime options native.
          *
@@ -148,23 +153,8 @@ public class RuntimeOptions  {
             super(nativeCreate(freeMemoryEveryCycle, controlQueueName, visibleDevice.getValue(), loadModelAtConstruction, disableShapeAndTypeChecking));
         }
 
-        /**
-         * Native create long.
-         *
-         * @param freeMemoeryEverySycle       the free memoery every sycle
-         * @param controlQueueName            the control queue name
-         * @param visibleDevice               the visible device
-         * @param loadModelAtConstruction     the load model at construction
-         * @param disableShapeAndTypeChecking the disable shape and type checking
-         * @return the long
-         */
-        static protected native long nativeCreate(boolean freeMemoeryEverySycle, String controlQueueName, int visibleDevice, boolean loadModelAtConstruction, boolean disableShapeAndTypeChecking);
+        static private native long nativeCreate(boolean freeMemoeryEverySycle, String controlQueueName, int visibleDevice, boolean loadModelAtConstruction, boolean disableShapeAndTypeChecking);
 
-        /**
-         * Native delete.
-         *
-         * @param handle the handle
-         */
         @Override
         protected native void nativeDelete(long handle);
     }

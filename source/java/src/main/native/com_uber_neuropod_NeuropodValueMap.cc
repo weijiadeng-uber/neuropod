@@ -1,4 +1,4 @@
-#include "org_neuropod_NeuropodValueMap.h"
+#include "com_uber_neuropod_NeuropodValueMap.h"
 
 #include "jclass_register.h"
 #include "reference_manager.h"
@@ -12,7 +12,7 @@
 
 using namespace neuropod::jni;
 
-JNIEXPORT void JNICALL Java_org_neuropod_NeuropodValueMap_nativeDelete(JNIEnv *, jobject, jlong inputHandle)
+JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodValueMap_nativeDelete(JNIEnv *, jobject, jlong inputHandle)
 {
     if (!ReferenceManager<neuropod::NeuropodValueMap>::contains(inputHandle))
     {
@@ -26,14 +26,14 @@ JNIEXPORT void JNICALL Java_org_neuropod_NeuropodValueMap_nativeDelete(JNIEnv *,
     ReferenceManager<neuropod::NeuropodValueMap>::remove(inputHandle);
 }
 
-JNIEXPORT jlong JNICALL Java_org_neuropod_NeuropodValueMap_nativeNew(JNIEnv *, jclass)
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodValueMap_nativeNew(JNIEnv *, jclass)
 {
     auto ret = std::make_shared<neuropod::NeuropodValueMap>();
     ReferenceManager<neuropod::NeuropodValueMap>::put(ret);
     return reinterpret_cast<long>(ret.get());
 }
 
-JNIEXPORT jlong JNICALL Java_org_neuropod_NeuropodValueMap_nativeGetValue(JNIEnv *env,
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodValueMap_nativeGetValue(JNIEnv *env,
                                                                           jclass,
                                                                           jstring key,
                                                                           jlong   nativeHandle)
@@ -53,12 +53,7 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_NeuropodValueMap_nativeGetValue(JNIEnv
     return reinterpret_cast<long>(nullptr);
 }
 
-/*
- * Class:     org_neuropod_NeuropodValueMap
- * Method:    nativeAddEntry
- * Signature: (Ljava/lang/String;JJ)V
- */
-JNIEXPORT void JNICALL Java_org_neuropod_NeuropodValueMap_nativeAddEntry
+JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodValueMap_nativeAddEntry
         (JNIEnv * env, jclass, jstring key, jlong tensorHandle, jlong mapHandle) {
     try
     {
@@ -74,7 +69,7 @@ JNIEXPORT void JNICALL Java_org_neuropod_NeuropodValueMap_nativeAddEntry
 
 }
 
-JNIEXPORT jobject JNICALL Java_org_neuropod_NeuropodValueMap_nativeGetKeyList(JNIEnv *env, jclass, jlong nativeHandle)
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodValueMap_nativeGetKeyList(JNIEnv *env, jclass, jlong nativeHandle)
 {
     try
     {

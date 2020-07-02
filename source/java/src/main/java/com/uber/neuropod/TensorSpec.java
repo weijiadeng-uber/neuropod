@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 import java.util.List;
 
@@ -50,11 +50,6 @@ public class TensorSpec {
         return dims;
     }
 
-    /**
-     * To string string.
-     *
-     * @return the string
-     */
     @Override
     public String toString() {
         return "TensorSpec{" +

@@ -1,4 +1,4 @@
-#include "org_neuropod_Neuropod.h"
+#include "com_uber_neuropod_Neuropod.h"
 
 #include "jclass_register.h"
 #include "reference_manager.h"
@@ -15,7 +15,7 @@
 
 using namespace neuropod::jni;
 
-JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeNew__Ljava_lang_String_2(JNIEnv *env, jclass, jstring path)
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_String_2(JNIEnv *env, jclass, jstring path)
 {
     neuropod::RuntimeOptions opts;
     opts.use_ope = true;
@@ -33,7 +33,7 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeNew__Ljava_lang_String_
     return reinterpret_cast<jlong>(nullptr);
 }
 
-JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeNew__Ljava_lang_String_2J(JNIEnv *env,
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_String_2J(JNIEnv *env,
                                                                                    jclass,
                                                                                    jstring path,
                                                                                    jlong   optHandle)
@@ -53,7 +53,7 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeNew__Ljava_lang_String_
     return reinterpret_cast<jlong>(nullptr);
 }
 
-JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeInfer(JNIEnv *env,
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeInfer(JNIEnv *env,
                                                                jclass,
                                                                jlong inputHandle,
                                                                jlong modelHandle)
@@ -77,12 +77,12 @@ JNIEXPORT jlong JNICALL Java_org_neuropod_Neuropod_nativeInfer(JNIEnv *env,
     return reinterpret_cast<jlong>(nullptr);
 }
 
-JNIEXPORT void JNICALL Java_org_neuropod_Neuropod_nativeDelete(JNIEnv *, jobject obj, jlong handle)
+JNIEXPORT void JNICALL Java_com_uber_neuropod_Neuropod_nativeDelete(JNIEnv *, jobject obj, jlong handle)
 {
     ReferenceManager<neuropod::Neuropod>::remove(handle);
 }
 
-JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureKeys(JNIEnv *env, jclass, jlong handle)
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_Neuropod_nativeGetInputFeatureKeys(JNIEnv *env, jclass, jlong handle)
 {
     try
     {
@@ -104,7 +104,7 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureKeys(J
     return nullptr;
 }
 
-JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureDataTypes(JNIEnv *env, jclass, jlong handle)
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_Neuropod_nativeGetInputFeatureDataTypes(JNIEnv *env, jclass, jlong handle)
 {
     try
     {
@@ -118,7 +118,7 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureDataTy
             env->CallBooleanMethod(
                 ret,
                 java_util_ArrayList_add,
-                getFieldObject(env, org_neuropod_TensorType, tensorTypeToString(tensorSpec.type).c_str()));
+                getFieldObject(env, com_uber_neuropod_TensorType, tensorTypeToString(tensorSpec.type).c_str()));
         }
         return ret;
     }
@@ -129,14 +129,13 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputFeatureDataTy
     return nullptr;
 }
 
-JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputs(JNIEnv *env, jclass, jlong handle)
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_Neuropod_nativeGetInputs(JNIEnv *env, jclass, jlong handle)
 {
     try
     {
         ReferenceManager<neuropod::Neuropod>::check(handle);
         auto    model     = reinterpret_cast<neuropod::Neuropod *>(handle);
         auto    inputSpec = model->get_inputs();
-        std::cout<<inputSpec.size()<<std::endl;
         return toJavaTensorSpecList(env, inputSpec);
     }
     catch (const std::exception &e)
@@ -146,7 +145,7 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetInputs(JNIEnv *env
     return nullptr;
 }
 
-JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetOutputs(JNIEnv *env, jclass, jlong handle)
+JNIEXPORT jobject JNICALL Java_com_uber_neuropod_Neuropod_nativeGetOutputs(JNIEnv *env, jclass, jlong handle)
 {
     try
     {
@@ -162,12 +161,7 @@ JNIEXPORT jobject JNICALL Java_org_neuropod_Neuropod_nativeGetOutputs(JNIEnv *en
     return nullptr;
 }
 
-/*
- * Class:     org_neuropod_Neuropod
- * Method:    nativeLoadModel
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_neuropod_Neuropod_nativeLoadModel(JNIEnv * env, jclass, jlong handle)
+JNIEXPORT void JNICALL Java_com_uber_neuropod_Neuropod_nativeLoadModel(JNIEnv * env, jclass, jlong handle)
 {
     try
     {
@@ -181,12 +175,7 @@ JNIEXPORT void JNICALL Java_org_neuropod_Neuropod_nativeLoadModel(JNIEnv * env, 
     }
 }
 
-/*
- * Class:     org_neuropod_Neuropod
- * Method:    nativeGetName
- * Signature: (J)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_org_neuropod_Neuropod_nativeGetName(JNIEnv * env, jclass, jlong handle)
+JNIEXPORT jstring JNICALL Java_com_uber_neuropod_Neuropod_nativeGetName(JNIEnv * env, jclass, jlong handle)
 {
     try
     {
@@ -201,13 +190,7 @@ JNIEXPORT jstring JNICALL Java_org_neuropod_Neuropod_nativeGetName(JNIEnv * env,
     return nullptr;
 }
 
-
-/*
- * Class:     org_neuropod_Neuropod
- * Method:    nativeGetPlatform
- * Signature: (J)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_org_neuropod_Neuropod_nativeGetPlatform(JNIEnv * env, jclass, jlong handle)
+JNIEXPORT jstring JNICALL Java_com_uber_neuropod_Neuropod_nativeGetPlatform(JNIEnv * env, jclass, jlong handle)
 {
     try
     {

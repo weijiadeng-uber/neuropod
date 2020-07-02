@@ -9,7 +9,7 @@ make run
 ```
 make jar
 ```
-4. To clean up:
+5. To clean up:
 ```
 make clean
 ```
@@ -21,8 +21,14 @@ Neuropod neuropod = new Neuropod(modelPath);
 ```
 2. To prepare the input feature:
 ```
-Map<String, Object> inputs = new HashMap<>();
-// Object should be a list of numeric objects or strings. If the input is a tensor, it should be flattened to a List first.
+NeuropodValueMap inputs = new NeuropodValueMap();
+NeuropodValue tensor1 = NeuropodValue.create(new float[]{1.0f, 3.0f}, Arrays.asList(2L, 1L), neuropod);
+inputs.addEntry("request_location_latitude",tensor1);
+tensor1.close();
+NeuropodValue tensor2 = NeuropodValue.create(new float[]{2.0f, 5.0f}, Arrays.asList(2L, 1L), neuropod);
+inputs.addEntry("request_location_longitude",tensor2);
+tensor2.close();
+...
 ```
 3. To do the inference job:
 ```

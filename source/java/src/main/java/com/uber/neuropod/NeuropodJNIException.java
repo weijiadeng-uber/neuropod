@@ -1,4 +1,4 @@
-package org.neuropod;
+package com.uber.neuropod;
 
 /**
  * The type Neuropod jni exception.
