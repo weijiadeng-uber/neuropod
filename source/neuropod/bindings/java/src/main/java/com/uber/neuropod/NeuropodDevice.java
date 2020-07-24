@@ -6,6 +6,7 @@ You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 
+<<<<<<< HEAD
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,14 +16,20 @@ limitations under the License.
 
 package com.uber.neuropod;
 
+=======
+>>>>>>> fc2c4c8... Add bazel build file and load native library
 /**
  * Which device the model uses. Use const int instead of enum to
  * support number greater than 7, or namely GPU8 or more GPUs
  */
 public class NeuropodDevice {
+<<<<<<< HEAD
     private NeuropodDevice() {
     }
 
+=======
+    private NeuropodDevice() {}
+>>>>>>> fc2c4c8... Add bazel build file and load native library
     public static final int CPU = -1;
     public static final int GPU0 = 0;
     public static final int GPU1 = 1;

@@ -1,5 +1,4 @@
 # The java api interface:
-
 1. To build & to unit test:
 ```
 bazel build //neuropod/bindings/java:neuropod_java_jar

@@ -16,3 +16,4 @@ bazel-testlogs
 source/python/neuropod/libneuropod.so
 source/python/neuropod/neuropod_multiprocess_worker
 source/python/neuropod/neuropod_native.so
+source/neuropod/bindings/java/src/main/native/com_uber_neuropod*.h
