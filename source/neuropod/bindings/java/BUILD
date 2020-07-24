@@ -40,6 +40,12 @@ filegroup(
         "@libtorch_repo//:libtorch_libs",
         "@tensorflow_repo//:libtensorflow_libs",
     ],
+      "//neuropod/backends/tensorflow:libneuropod_tensorflow_backend.so",
+      "//neuropod/backends/python_bridge:libneuropod_pythonbridge_backend.so",
+      "//neuropod/backends/torchscript:libneuropod_torchscript_backend.so",
+      "@tensorflow_repo//:libtensorflow_libs",
+      "@libtorch_repo//:libtorch_libs",
+    ] ,
     visibility = [
         "//neuropod:__subpackages__",
     ],

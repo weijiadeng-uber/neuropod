@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Copyright (c) 2020 UATC, LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-=======
->>>>>>> fc2c4c8... Add bazel build file and load native library
 #include "com_uber_neuropod_LibraryLoader.h"
 
 #include "utils.h"
