@@ -15,6 +15,8 @@ limitations under the License.
 
 package com.uber.neuropod;
 
+import java.util.Objects;
+
 /**
  * The type Dimension.
  */
@@ -23,11 +25,11 @@ public class Dimension {
      * The Value. -1 means None/null, any value is OK
      * -2 means this is a symbol (see below)
      */
-    long value;
+    private long value;
     /**
      * The name of this symbol (if it is a symbol).
      */
-    String symbol;
+    private String symbol;
 
     /**
      * Instantiates a new Dimension by given value
@@ -57,6 +59,20 @@ public class Dimension {
         return value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Dimension)) return false;
+        Dimension dimension = (Dimension) o;
+        return getValue() == dimension.getValue() &&
+                Objects.equals(getSymbol(), dimension.getSymbol());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue(), getSymbol());
+    }
+
     /**
      * Gets the symbol.
      *
@@ -64,5 +80,17 @@ public class Dimension {
      */
     public String getSymbol() {
         return symbol;
+    }
+
+    @Override
+    public String toString() {
+        if (value >= 0) {
+            return String.valueOf(value);
+        } else if (value == -1){
+            return "None";
+        } else if (value == -2) {
+            return symbol;
+        }
+        return "Not Set!";
     }
 }

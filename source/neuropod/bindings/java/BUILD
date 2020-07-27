@@ -40,12 +40,6 @@ filegroup(
         "@libtorch_repo//:libtorch_libs",
         "@tensorflow_repo//:libtensorflow_libs",
     ],
-      "//neuropod/backends/tensorflow:libneuropod_tensorflow_backend.so",
-      "//neuropod/backends/python_bridge:libneuropod_pythonbridge_backend.so",
-      "//neuropod/backends/torchscript:libneuropod_torchscript_backend.so",
-      "@tensorflow_repo//:libtensorflow_libs",
-      "@libtorch_repo//:libtorch_libs",
-    ] ,
     visibility = [
         "//neuropod:__subpackages__",
     ],
@@ -135,6 +129,7 @@ cc_binary(
     deps = [
         ":copy_jni_hdr_lib",
         "//neuropod:neuropod_hdrs",
+        "//neuropod/tests:ope_overrides",
     ],
 )
 
@@ -144,6 +139,19 @@ java_test(
     javacopts = JAVACOPTS,
     test_class = "com.uber.neuropod.LibraryLoaderTest",
     deps = [
+        ":neuropod_java",
+        "@junit",
+    ],
+)
+
+java_test(
+    name = "NeuropodTest",
+    srcs = ["src/test/java/com/uber/neuropod/NeuropodTest.java"],
+    data = ["//neuropod/tests/test_data"],
+    javacopts = JAVACOPTS,
+    test_class = "com.uber.neuropod.NeuropodTest",
+    deps = [
+        "//neuropod/backends/tensorflow:tensorflow_backend",
         ":neuropod_java",
         "@junit",
     ],
