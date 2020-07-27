@@ -15,6 +15,7 @@ limitations under the License.
 
 package com.uber.neuropod;
 
+
 /**
  * This is a base class for all class with a binding to native class.
  * Need to call close() method after usage to free memory in C++ side.
