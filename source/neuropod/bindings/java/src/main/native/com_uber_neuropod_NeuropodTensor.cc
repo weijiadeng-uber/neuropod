@@ -112,7 +112,7 @@ JNIEXPORT jobject JNICALL Java_com_uber_neuropod_NeuropodTensor_nativeGetTensorT
     {
         auto tensor = (*reinterpret_cast<std::shared_ptr<neuropod::NeuropodValue> *>(handle))->as_tensor();
         auto type   = tensor->as_tensor()->get_tensor_type();
-        return getFieldObject(env, com_uber_neuropod_TensorType, tensorTypeToString(type).c_str());
+        return getTensorTypeField(env, com_uber_neuropod_TensorType, tensorTypeToString(type).c_str());
     }
     catch (const std::exception &e)
     {

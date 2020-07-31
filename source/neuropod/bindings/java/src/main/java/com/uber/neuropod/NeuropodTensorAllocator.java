@@ -17,7 +17,9 @@ package com.uber.neuropod;
 
 import java.nio.*;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The factory type for NeuropodTensor, can be obtained from a neuropod model or as a generic allocator.
@@ -27,6 +29,7 @@ public class NeuropodTensorAllocator extends NativeClass {
     protected NeuropodTensorAllocator(long handle) {
         super(handle);
     }
+    private static final Set<TensorType> SUPPORTED_TENSOR = new HashSet<>(Arrays.asList(TensorType.INT32_TENSOR,TensorType.INT64_TENSOR,TensorType.DOUBLE_TENSOR,TensorType.FLOAT_TENSOR));
 
     /**
      * Create a NeuropodTensor based on given ByteBuffer, dims array and tensorType. The created tensor
@@ -41,12 +44,19 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @return the created NeuropodTensor
      */
     public NeuropodTensor create(ByteBuffer byteBuffer, long[] dims, TensorType tensorType) {
+        if (!SUPPORTED_TENSOR.contains(tensorType)) {
+            throw new NeuropodJNIException("Unsupported tensor type!");
+        }
         ByteBuffer tensorBuffer = null;
         if (byteBuffer.isDirect() && byteBuffer.order() == ByteOrder.nativeOrder() && !byteBuffer.isReadOnly()) {
             tensorBuffer = byteBuffer;
         } else {
-            tensorBuffer = allocateJavaBuffer(dims, tensorType);
-            tensorBuffer.put(byteBuffer);
+            switch (tensorType) {
+                case INT32_TENSOR : return create(byteBuffer.asIntBuffer(), dims);
+                case INT64_TENSOR: return create(byteBuffer.asLongBuffer(), dims);
+                case FLOAT_TENSOR: return create(byteBuffer.asFloatBuffer(), dims);
+                case DOUBLE_TENSOR: return create(byteBuffer.asDoubleBuffer(), dims);
+            }
         }
         return createTensorFromBuffer(tensorBuffer, dims, tensorType);
     }
@@ -143,6 +153,7 @@ public class NeuropodTensorAllocator extends NativeClass {
     }
 
     private NeuropodTensor createTensorFromBuffer(ByteBuffer buffer, long[] dims, TensorType tensorType) {
+        //buffer.rewind();
         NeuropodTensor tensor = new NeuropodTensor();
         tensor.buffer = buffer;
         tensor.setNativeHandle(nativeAllocate(dims, tensorType.getValue(), tensor.buffer, super.getNativeHandle()));

@@ -65,14 +65,14 @@ jmethodID getMethodID(JNIEnv *env, jclass clazz, const char *name, const char *s
     return ret;
 }
 
-jobject getFieldObject(JNIEnv *env, jclass dataTypes, std::string fieldName)
+jobject getTensorTypeField(JNIEnv *env, std::string fieldName)
 {
     jfieldID field = env->GetStaticFieldID(dataTypes, fieldName.c_str(), TENSOR_TYPE.c_str());
     if (reinterpret_cast<jlong>(field) == 0)
     {
         throw std::runtime_error(std::string("Field not found: ") + fieldName);
     }
-    return env->GetStaticObjectField(dataTypes, field);
+    return env->GetStaticObjectField(com_uber_neuropod_TensorType, field);
 }
 
 std::string tensorTypeToString(TensorType type)

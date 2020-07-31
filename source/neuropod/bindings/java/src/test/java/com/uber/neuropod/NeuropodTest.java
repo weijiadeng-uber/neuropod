@@ -19,7 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.FloatBuffer;
+import java.nio.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -151,19 +151,34 @@ public class NeuropodTest {
 
     @Test
     public void infer() {
-        Map<String, NeuropodTensor> tensors = new HashMap<>();
         NeuropodTensorAllocator allocator = model.getTensorAllocator();
-        NeuropodTensor x = allocator.create(FloatBuffer.wrap(new float[]{1.0f, 3.0f}), new long[]{1L, 2L});
-        tensors.put("x", x);
-        tensors.put("y", allocator.create(FloatBuffer.wrap(new float[]{2.0f, 4.0f}), new long[]{1L, 2L}));
-        Map<String, NeuropodTensor> res = model.infer(tensors);
+        Map<String, NeuropodTensor> inputs = new HashMap<>();
+        TensorType type = TensorType.FLOAT_TENSOR;
+
+        ByteBuffer bufferX = ByteBuffer.allocateDirect(type.getElementByteSize() * 2).order(ByteOrder.nativeOrder());
+        FloatBuffer floatBufferX = bufferX.asFloatBuffer();
+        floatBufferX.put(1.0f);
+        floatBufferX.put(2.0f);
+        NeuropodTensor tensorX = allocator.create(bufferX, new long[]{1L, 2L},type);
+        inputs.put("x", tensorX);
+
+        ByteBuffer bufferY = ByteBuffer.allocateDirect(type.getElementByteSize() * 2).order(ByteOrder.nativeOrder());
+        FloatBuffer floatBufferY = bufferY.asFloatBuffer();
+        floatBufferY.put(3.0f);
+        floatBufferY.put(4.0f);
+        NeuropodTensor tensorY = allocator.create(bufferY, new long[]{1L, 2L},type);
+        inputs.put("y", tensorY);
+
+        Map<String, NeuropodTensor> res = model.infer(inputs);
+
         assertTrue(res.containsKey("out"));
         NeuropodTensor out = res.get("out");
-        FloatBuffer buffer = out.toFloatBuffer();
-        assertEquals(3.0f , buffer.get(0), 1E-6f);
-        assertEquals(7.0f , buffer.get(1), 1E-6f);
-        x.close();
+        assertEquals(4.0f , out.getFloat(0,0), 1E-6f);
+        assertEquals(6.0f , out.getFloat(0,1), 1E-6f);
         out.close();
+        tensorX.close();
+        tensorY.close();
+        allocator.close();
     }
 
     @After

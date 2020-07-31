@@ -35,8 +35,8 @@ jclass findClass(JNIEnv *env, const char *name);
 // A wrapper for env->GetMethodID, will throw a cpp exception if the get fails.
 jmethodID getMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig);
 
-// Get the corresponding Java enum based on the given field name.
-jobject getFieldObject(JNIEnv *env, jclass enumClass, std::string fieldName);
+// Get the corresponding Java TensorType enum based on the given field name.
+jobject getTensorTypeField(JNIEnv *env, std::string fieldName);
 
 // Convert cpp tensor type to string
 std::string tensorTypeToString(TensorType type);
