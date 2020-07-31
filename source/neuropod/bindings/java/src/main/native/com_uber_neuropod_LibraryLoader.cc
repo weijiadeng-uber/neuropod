@@ -31,6 +31,9 @@ JNIEXPORT void JNICALL Java_com_uber_neuropod_LibraryLoader_nativeExport(JNIEnv 
 {
     std::string oriPath = getenv("PATH");
     setenv("PATH", (oriPath + ":" + neuropod::jni::toString(env, libPath)).c_str(), 1 /* Overwrite */);
+    std::string oriPath1 = (getenv("LD_LIBRARY_PATH") == nullptr)? "":getenv("LD_LIBRARY_PATH");
+    setenv("LD_LIBRARY_PATH", (oriPath1 + ":" + neuropod::jni::toString(env, libPath)).c_str(), 1 /* Overwrite */);
+
 }
 
 JNIEXPORT void JNICALL Java_com_uber_neuropod_LibraryLoader_nativeSetTestMode(JNIEnv *, jclass, jboolean mode)

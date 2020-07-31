@@ -34,7 +34,7 @@ class LibraryLoader {
 
     private static final Logger LOGGER = Logger.getLogger(LibraryLoader.class.getName());
     // C++ library names. If we use the Neruopod Java API from a jar file these files may be packed into the jar file.
-    private static final List<String> EMBEDDED_LIB_NAMES = Arrays.asList("libneuropod.so");
+    private static final List<String> EMBEDDED_LIB_NAMES = Arrays.asList("libneuropod.so", "libneuropod_tensorflow_backend.so", "libtensorflow.so", "libtensorflow.so.1","libtensorflow.so.1.15.0", "libtensorflow_framework.so", "libtensorflow_framework.so.1","libtensorflow_framework.so.1.15.0","libneuropod_pythonbridge_backend.so", "libtorch.so.1", "libtorch.so", "libonnxifi.so", "libonnxifi_dummy.so","libneuropod_torchscript_backend.so","libfoxi_dummy.so","libfoxi.so","libcaffe2_module_test_dynamic.so","libcaffe2_detectron_ops.so","libcaffe2.so","libc10.so","libgomp-8bba0e50.so.1");
     private static final List<String> BIN_NAMES = Arrays.asList("neuropod_multiprocess_worker");
     private static final String JNI_NAME = "neuropod_jni"; // System.loadLibrary can autocompele the libname
     private static final int BUFFER_SIZE = 1 << 20;

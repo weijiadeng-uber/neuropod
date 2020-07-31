@@ -103,15 +103,17 @@ JNIEXPORT jlong JNICALL Java_com_uber_neuropod_NeuropodTensorAllocator_nativeCre
         jlong *              arr  = env->GetLongArrayElements(dims, 0);
         std::vector<int64_t> shapes(arr, arr + shapeSize);
         env->ReleaseLongArrayElements(dims, arr, JNI_ABORT);
-        auto tensor = allocator->allocate_tensor<std::string>(shapes);
-        jlong                                    size   = env->CallIntMethod(data, java_util_ArrayList_size);
-        auto                                     accessor = tensor->accessor<1>();
+        // This function copy data twice
+        jlong                    size = env->CallIntMethod(data, java_util_ArrayList_size);
+        std::vector<std::string> intermediate(size);
         for (jlong i = 0; i < size; i++)
         {
             jstring element = static_cast<jstring>(env->CallObjectMethod(data, java_util_ArrayList_get, i));
-            accessor.operator[](i) = toString(env, element);
+            intermediate[i] = toString(env, element);
             env->DeleteLocalRef(element);
         }
+        auto tensor = allocator->allocate_tensor<std::string>(shapes);
+        tensor->copy_from(intermediate);
         std::shared_ptr<neuropod::NeuropodValue> ret    = tensor;
         return reinterpret_cast<jlong>(toHeap(ret));
     }

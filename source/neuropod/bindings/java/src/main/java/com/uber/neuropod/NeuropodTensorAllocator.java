@@ -40,12 +40,13 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @param tensorType the tensor type
      * @return the created NeuropodTensor
      */
-    NeuropodTensor create(ByteBuffer byteBuffer, long[] dims, TensorType tensorType) {
+    public NeuropodTensor create(ByteBuffer byteBuffer, long[] dims, TensorType tensorType) {
         ByteBuffer tensorBuffer = null;
         if (byteBuffer.isDirect() && byteBuffer.order() == ByteOrder.nativeOrder() && !byteBuffer.isReadOnly()) {
             tensorBuffer = byteBuffer;
         } else {
             tensorBuffer = allocateJavaBuffer(dims, tensorType);
+            tensorBuffer.put(byteBuffer);
         }
         return createTensorFromBuffer(tensorBuffer, dims, tensorType);
     }
@@ -60,7 +61,7 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @param dims       the shape of the tensor
      * @return the created NeuropodTensor
      */
-    NeuropodTensor create(LongBuffer longBuffer, long[] dims) {
+    public NeuropodTensor create(LongBuffer longBuffer, long[] dims) {
         TensorType type =TensorType.INT64_TENSOR;
         ByteBuffer tensorBuffer = allocateJavaBuffer(dims, type);
         tensorBuffer.asLongBuffer().put(longBuffer);
@@ -77,7 +78,7 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @param dims      the shape of the tensor
      * @return the created NeuropodTensor
      */
-    NeuropodTensor create(IntBuffer intBuffer, long[] dims) {
+    public NeuropodTensor create(IntBuffer intBuffer, long[] dims) {
         TensorType type =TensorType.INT32_TENSOR;
         ByteBuffer tensorBuffer = allocateJavaBuffer(dims, type);
         tensorBuffer.asIntBuffer().put(intBuffer);
@@ -94,7 +95,7 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @param dims         the shape of the tensor
      * @return the created NeuropodTensor
      */
-    NeuropodTensor create(DoubleBuffer doubleBuffer, long[] dims) {
+    public NeuropodTensor create(DoubleBuffer doubleBuffer, long[] dims) {
         TensorType type =TensorType.DOUBLE_TENSOR;
         ByteBuffer tensorBuffer = allocateJavaBuffer(dims, type);
         tensorBuffer.asDoubleBuffer().put(doubleBuffer);
@@ -111,7 +112,7 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @param dims        the shape of the tensor
      * @return the neuropod NeuropodTensor
      */
-    NeuropodTensor create(FloatBuffer floatBuffer, long[] dims) {
+    public NeuropodTensor create(FloatBuffer floatBuffer, long[] dims) {
         TensorType type =TensorType.FLOAT_TENSOR;
         ByteBuffer tensorBuffer = allocateJavaBuffer(dims, type);
         tensorBuffer.asFloatBuffer().put(floatBuffer);
@@ -128,7 +129,7 @@ public class NeuropodTensorAllocator extends NativeClass {
      * @param dims       the dims
      * @return the created NeuropodTensor
      */
-    NeuropodTensor create(List<String> stringList, long[] dims) {
+    public NeuropodTensor create(List<String> stringList, long[] dims) {
         NeuropodTensor tensor = new NeuropodTensor();
         tensor.setNativeHandle(nativeCreateStringTensor(stringList, dims, super.getNativeHandle()));
         return tensor;

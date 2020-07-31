@@ -73,7 +73,6 @@ public class NeuropodTensor extends NativeClass implements Serializable {
      * @return the LongBuffer
      */
     public LongBuffer toLongBuffer() {
-        super.getNativeHandle(); // Check whether the C++ side memory is deallocated
         checkType(TensorType.INT64_TENSOR);
         LongBuffer ret = LongBuffer.allocate((int) getNumberOfElements());
         ret.put(buffer.asLongBuffer());
@@ -106,7 +105,7 @@ public class NeuropodTensor extends NativeClass implements Serializable {
     public FloatBuffer toFloatBuffer() {
         checkType(TensorType.FLOAT_TENSOR);
         FloatBuffer ret = FloatBuffer.allocate((int) getNumberOfElements());
-        ret.put(nativeGetBuffer(super.getNativeHandle()).asFloatBuffer());
+        ret.put(buffer.asFloatBuffer());
         return ret;
     }
 
@@ -252,7 +251,12 @@ public class NeuropodTensor extends NativeClass implements Serializable {
     }
 
     @Override
-    protected native void nativeDelete(long handle) throws NeuropodJNIException;
+    protected void nativeDelete(long handle) throws NeuropodJNIException {
+        nativeDoDelete(handle);
+        this.buffer = null;
+    }
+
+    protected native void nativeDoDelete(long handle) throws NeuropodJNIException;
 
     private static native ByteBuffer nativeGetBuffer(long nativeHandle);
 

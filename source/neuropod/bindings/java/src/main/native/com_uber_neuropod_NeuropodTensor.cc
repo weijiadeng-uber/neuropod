@@ -8,7 +8,7 @@
 using namespace neuropod::jni;
 
 
-JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodTensor_nativeDelete
+JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodTensor_nativeDoDelete
   (JNIEnv *, jobject, jlong handle) {
     auto tensor = reinterpret_cast<std::shared_ptr<neuropod::NeuropodValue> *>(handle);
     (*tensor).reset();
@@ -149,25 +149,9 @@ JNIEXPORT jstring JNICALL Java_com_uber_neuropod_NeuropodTensor_nativeGetString
                                 ->as_tensor()
                                 ->as_typed_tensor<std::string>();
         std::string ele;
-        switch (stringTensor->get_dims().size())
-        {
-          // TODO(weijiad) Write it in a more graceful way
-        case 1:
-            ele = accessStringTensorAtIndex<1>(stringTensor, index);
-            break;
-        case 2:
-            ele = accessStringTensorAtIndex<2>(stringTensor, index);
-            break;
-        case 3:
-            ele = accessStringTensorAtIndex<3>(stringTensor, index);
-            break;
-        case 4:
-            ele = accessStringTensorAtIndex<4>(stringTensor, index);
-            break;
-        default:
-            auto strList = stringTensor->get_data_as_vector();
-            ele          = strList[index];
-        }
+        // TODO: Improve the effiency
+        auto strList = stringTensor->get_data_as_vector();
+        ele          = strList[index];
         return env->NewStringUTF(ele.c_str());
     }
     catch (const std::exception &e)

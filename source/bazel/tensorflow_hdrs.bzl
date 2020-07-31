@@ -2,7 +2,7 @@
 def _impl(repository_ctx):
     # The `or` pattern below handles empty strings and unset env variables
     # Using a default value only handles unset env variables
-    version = repository_ctx.os.environ.get("NEUROPOD_TENSORFLOW_VERSION") or "1.12.0"
+    version = repository_ctx.os.environ.get("NEUROPOD_TENSORFLOW_VERSION") or "1.15.0"
     IS_MAC = repository_ctx.os.name.startswith("mac")
     IS_GPU = (repository_ctx.os.environ.get("NEUROPOD_IS_GPU") or None) != None
 
@@ -79,7 +79,7 @@ def _impl(repository_ctx):
     download_mapping = MAPPING["{}-{}-{}".format(
         version,
         "mac" if IS_MAC else "linux",
-        "gpu" if IS_GPU else "cpu",
+        "cpu",
     )]
 
     download_url = download_mapping["url"]

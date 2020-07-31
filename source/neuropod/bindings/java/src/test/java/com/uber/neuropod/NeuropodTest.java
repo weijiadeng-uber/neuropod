@@ -33,7 +33,7 @@ public class NeuropodTest {
     public void setUp() throws Exception {
         LibraryLoader.load();
         // Set the test mode to true to use override library path
-        LibraryLoader.setTestMode(true);
+        LibraryLoader.setTestMode(false);
         RuntimeOptions opts = new RuntimeOptions();
         // opts can only be set to true for now, otherwise load backend library
         // will fail
@@ -159,8 +159,11 @@ public class NeuropodTest {
         Map<String, NeuropodTensor> res = model.infer(tensors);
         assertTrue(res.containsKey("out"));
         NeuropodTensor out = res.get("out");
-        assertEquals(3.0f , out.getFloat(0,0), 1E-6f);
-        assertEquals(7.0f , out.getFloat(0,1), 1E-6f);
+        FloatBuffer buffer = out.toFloatBuffer();
+        assertEquals(3.0f , buffer.get(0), 1E-6f);
+        assertEquals(7.0f , buffer.get(1), 1E-6f);
+        x.close();
+        out.close();
     }
 
     @After

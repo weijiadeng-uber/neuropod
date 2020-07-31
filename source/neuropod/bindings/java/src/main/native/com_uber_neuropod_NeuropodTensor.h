@@ -12,7 +12,7 @@ extern "C" {
  * Method:    nativeDelete
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodTensor_nativeDelete
+JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodTensor_nativeDoDelete
   (JNIEnv *, jobject, jlong);
 
 /*

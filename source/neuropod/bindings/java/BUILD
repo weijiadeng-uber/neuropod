@@ -80,6 +80,7 @@ java_binary(
         "//neuropod:libneuropod.so",
         "//neuropod/multiprocess:neuropod_multiprocess_worker",
         ":neuropod_jni",
+        ":backends",
     ],
     javacopts = JAVACOPTS,
     visibility = ["//visibility:public"],
@@ -148,8 +149,6 @@ java_test(
     name = "NeuropodTest",
     srcs = ["src/test/java/com/uber/neuropod/NeuropodTest.java"],
     data = [
-        "//neuropod/backends/tensorflow:libneuropod_tensorflow_backend.so",
-        "//neuropod/backends/torchscript:libneuropod_torchscript_backend.so",
         "//neuropod/tests/test_data",
     ],
     javacopts = JAVACOPTS,
