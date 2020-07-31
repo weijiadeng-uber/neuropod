@@ -19,9 +19,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.nio.FloatBuffer;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -150,6 +149,19 @@ public class NeuropodTest {
         }
     }
 
+    @Test
+    public void infer() {
+        Map<String, NeuropodTensor> tensors = new HashMap<>();
+        NeuropodTensorAllocator allocator = model.getTensorAllocator();
+        NeuropodTensor x = allocator.create(FloatBuffer.wrap(new float[]{1.0f, 3.0f}), new long[]{1L, 2L});
+        tensors.put("x", x);
+        tensors.put("y", allocator.create(FloatBuffer.wrap(new float[]{2.0f, 4.0f}), new long[]{1L, 2L}));
+        Map<String, NeuropodTensor> res = model.infer(tensors);
+        assertTrue(res.containsKey("out"));
+        NeuropodTensor out = res.get("out");
+        assertEquals(3.0f , out.getFloat(0,0), 1E-6f);
+        assertEquals(7.0f , out.getFloat(0,1), 1E-6f);
+    }
 
     @After
     public void tearDown() throws Exception {

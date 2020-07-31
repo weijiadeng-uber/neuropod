@@ -75,7 +75,7 @@ public class Neuropod extends NativeClass {
      * @return the inference result
      */
     public Map<String, NeuropodTensor> infer(Map<String, NeuropodTensor> inputs) {
-        return null;
+        return infer(inputs, null);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Neuropod extends NativeClass {
      * @return the inference result
      */
     public Map<String, NeuropodTensor> infer(Map<String, NeuropodTensor> inputs, List<String> requestedOutputs) {
-        return null;
+        return nativeInfer(inputs.entrySet().toArray(), requestedOutputs, super.getNativeHandle());
     }
 
     /**
@@ -133,21 +133,24 @@ public class Neuropod extends NativeClass {
         return new NeuropodTensorAllocator(nativeGetGenericAllocator());
     }
 
-    static private native long nativeNew(String filePath, long optionHandle);
+    private static native long nativeNew(String filePath, long optionHandle);
 
-    static private native List<TensorSpec> nativeGetInputs(long modelHandle);
+    private static native List<TensorSpec> nativeGetInputs(long modelHandle);
 
-    static private native List<TensorSpec> nativeGetOutputs(long modelHandle);
+    private static native List<TensorSpec> nativeGetOutputs(long modelHandle);
 
-    static private native void nativeLoadModel(long modelHandle);
+    private static native void nativeLoadModel(long modelHandle);
 
-    static private native String nativeGetName(long modelHandle);
+    private static native String nativeGetName(long modelHandle);
 
-    static private native String nativeGetPlatform(long modelHandle);
+    private static native String nativeGetPlatform(long modelHandle);
 
-    static private native long nativeGetAllocator(long modelHandle);
+    private static native long nativeGetAllocator(long modelHandle);
 
-    static private native long nativeGetGenericAllocator();
+    private static native long nativeGetGenericAllocator();
+
+    private static native Map<String, NeuropodTensor> nativeInfer(Object[] inputs, List<String> requestedOutputs, long modelHandle);
+
 
     @Override
     protected native void nativeDelete(long handle);

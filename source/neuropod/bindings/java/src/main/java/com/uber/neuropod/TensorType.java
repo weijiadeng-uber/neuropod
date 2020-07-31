@@ -71,6 +71,23 @@ public enum TensorType {
      */
     UINT64_TENSOR(10);
 
+    public int getElementByteSize(){
+        switch (map.get(value)) {
+            case FLOAT_TENSOR:
+            case UINT32_TENSOR:
+            case INT32_TENSOR: return 4;
+            case DOUBLE_TENSOR:
+            case UINT64_TENSOR:
+            case INT64_TENSOR: return 8;
+            case INT8_TENSOR:
+            case UINT8_TENSOR: return 1;
+            case UINT16_TENSOR:
+            case INT16_TENSOR: return 2;
+            case STRING_TENSOR: return -1;
+        }
+        return -1;
+    }
+
     // These helper functions below are for supporting int to enum and enum to int conversion
     private int value;
     private static Map<Integer, TensorType> map = new HashMap<>();

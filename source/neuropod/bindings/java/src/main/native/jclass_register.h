@@ -32,6 +32,18 @@ extern jmethodID com_uber_neuropod_Dimension_symbol_;
 
 extern jclass com_uber_neuropod_TensorType;
 
+extern jclass    java_util_HashMap;
+extern jmethodID    java_util_HashMap_;
+extern jmethodID    java_util_HashMap_put;
+
+extern jclass java_util_Map_Entry;
+extern jmethodID java_util_Map_Entry_getKey;
+extern jmethodID java_util_Map_Entry_getValue;
+
 extern jclass com_uber_neuropod_NeuropodJNIException;
+
+extern jclass com_uber_neuropod_NeuropodTensor;
+extern jmethodID    com_uber_neuropod_NeuropodTensor_;
+extern jmethodID com_uber_neuropod_NeuropodTensor_getHandle;
 
 extern bool isTestMode;

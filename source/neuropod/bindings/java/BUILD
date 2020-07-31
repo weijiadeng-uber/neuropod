@@ -159,15 +159,3 @@ java_test(
         "@junit",
     ],
 )
-
-java_test(
-    name = "NeuropodTest",
-    srcs = ["src/test/java/com/uber/neuropod/NeuropodTest.java"],
-    data = ["src/test/resources/test_model.zip"],
-    deps = [
-      ":neuropod_java",
-      "@junit",
-    ],
-    javacopts = JAVACOPTS,
-    test_class = "com.uber.neuropod.NeuropodTest",
-)

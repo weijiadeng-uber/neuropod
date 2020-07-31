@@ -15,22 +15,16 @@ limitations under the License.
 
 #include "utils.h"
 
-<<<<<<< HEAD
 #include "jclass_register.h"
 #include "neuropod/neuropod.hh"
 
 #include <sstream>
 #include <stdexcept>
-=======
-<<<<<<< HEAD
-=======
 #include "neuropod/neuropod.hh"
 #include "jclass_register.h"
 
 #include <sstream>
 #include <stdexcept>
->>>>>>> 14c12d1... add load model
->>>>>>> 8d75f5f... add load model
 #include <string>
 #include <vector>
 
@@ -66,50 +60,21 @@ jmethodID getMethodID(JNIEnv *env, jclass clazz, const char *name, const char *s
     jmethodID ret = env->GetMethodID(clazz, name, sig);
     if (reinterpret_cast<jlong>(ret) == 0)
     {
-<<<<<<< HEAD
         throw std::runtime_error(std::string("Method ID not found: ") + name + sig);
-=======
-        throw std::runtime_error(std::string("Method ID not found: ") + getJclassName(env, clazz) + name + sig);
->>>>>>> 8d75f5f... add load model
     }
     return ret;
 }
 
-<<<<<<< HEAD
-=======
-jmethodID getStaticMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig)
-{
-    jmethodID ret = env->GetStaticMethodID(clazz, name, sig);
-    if (reinterpret_cast<jlong>(ret) == 0)
-    {
-<<<<<<< HEAD
-        throw std::runtime_error(std::string("Method ID not found: ") + name + sig);
-=======
-        throw std::runtime_error(std::string("Method ID not found: ") + getJclassName(env, clazz) + name + sig);
->>>>>>> 8d75f5f... add load model
-    }
-    return ret;
-}
-
->>>>>>> 65437be... neuropod load model
 jobject getFieldObject(JNIEnv *env, jclass dataTypes, std::string fieldName)
 {
     jfieldID field = env->GetStaticFieldID(dataTypes, fieldName.c_str(), TENSOR_TYPE.c_str());
     if (reinterpret_cast<jlong>(field) == 0)
     {
-<<<<<<< HEAD
         throw std::runtime_error(std::string("Field not found: ") + fieldName);
-=======
-        throw std::runtime_error(std::string("Field not found: ") + getJclassName(env, dataTypes) + fieldName);
->>>>>>> 8d75f5f... add load model
     }
     return env->GetStaticObjectField(dataTypes, field);
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 8d75f5f... add load model
 std::string tensorTypeToString(TensorType type)
 {
     std::string       typeString;
@@ -119,11 +84,7 @@ std::string tensorTypeToString(TensorType type)
     return typeString;
 }
 
-<<<<<<< HEAD
 void throwJavaException(JNIEnv *env, const char *message)
-=======
-void throwJavaException(JNIEnv *env, const char* message)
->>>>>>> 8d75f5f... add load model
 {
     env->ThrowNew(com_uber_neuropod_NeuropodJNIException, message);
 }
