@@ -20,6 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -159,14 +162,14 @@ public class NeuropodTest {
         FloatBuffer floatBufferX = bufferX.asFloatBuffer();
         floatBufferX.put(1.0f);
         floatBufferX.put(2.0f);
-        NeuropodTensor tensorX = allocator.create(bufferX, new long[]{1L, 2L},type);
+        NeuropodTensor tensorX = allocator.tensorFromMemory(bufferX, new long[]{1L, 2L},type);
         inputs.put("x", tensorX);
 
         ByteBuffer bufferY = ByteBuffer.allocateDirect(type.getElementByteSize() * 2).order(ByteOrder.nativeOrder());
         FloatBuffer floatBufferY = bufferY.asFloatBuffer();
         floatBufferY.put(3.0f);
         floatBufferY.put(4.0f);
-        NeuropodTensor tensorY = allocator.create(bufferY, new long[]{1L, 2L},type);
+        NeuropodTensor tensorY = allocator.tensorFromMemory(bufferY, new long[]{1L, 2L},type);
         inputs.put("y", tensorY);
 
         Map<String, NeuropodTensor> res = model.infer(inputs);

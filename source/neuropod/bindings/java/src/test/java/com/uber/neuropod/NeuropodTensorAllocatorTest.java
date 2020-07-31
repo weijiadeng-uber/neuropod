@@ -26,7 +26,7 @@ public class NeuropodTensorAllocatorTest {
         }
         intBuffer.rewind();
         long [] shape = new long[]{2,2};
-        NeuropodTensor tensor = allocator.create(intBuffer, shape);
+        NeuropodTensor tensor = allocator.copyFrom(intBuffer, shape);
         assertArrayEquals(tensor.getDims(), shape);
         for (int i=0; i<2; i++) {
             for (int j=0; j<2; j++) {
@@ -43,7 +43,7 @@ public class NeuropodTensorAllocatorTest {
         }
         longBuffer.rewind();
         long [] shape = new long[]{2,2};
-        NeuropodTensor tensor = allocator.create(longBuffer, shape);
+        NeuropodTensor tensor = allocator.copyFrom(longBuffer, shape);
         assertArrayEquals(tensor.getDims(), shape);
         for (int i=0; i<2; i++) {
             for (int j=0; j<2; j++) {
@@ -60,7 +60,7 @@ public class NeuropodTensorAllocatorTest {
         }
         doubleBuffer.rewind();
         long [] shape = new long[]{2,2};
-        NeuropodTensor tensor = allocator.create(doubleBuffer, shape);
+        NeuropodTensor tensor = allocator.copyFrom(doubleBuffer, shape);
         assertArrayEquals(tensor.getDims(), shape);
         for (int i=0; i<2; i++) {
             for (int j=0; j<2; j++) {
@@ -77,7 +77,7 @@ public class NeuropodTensorAllocatorTest {
         }
         floatBuffer.rewind();
         long [] shape = new long[]{2,2};
-        NeuropodTensor tensor = allocator.create(floatBuffer, shape);
+        NeuropodTensor tensor = allocator.copyFrom(floatBuffer, shape);
         assertArrayEquals(tensor.getDims(), shape);
         for (int i=0; i<2; i++) {
             for (int j=0; j<2; j++) {
@@ -94,13 +94,15 @@ public class NeuropodTensorAllocatorTest {
         }
         buffer.rewind();
         long [] shape = new long[]{2,2};
-        NeuropodTensor tensor = allocator.create(buffer, shape, TensorType.INT32_TENSOR);
+        NeuropodTensor tensor = allocator.tensorFromMemory(buffer, shape, TensorType.INT32_TENSOR);
         assertArrayEquals(tensor.getDims(), shape);
         for (int i=0; i<2; i++) {
             for (int j=0; j<2; j++) {
                 assertEquals(tensor.getInt(i, j), buffer.asIntBuffer().get(i*2 + j), EPSILON);
             }
         }
+        ByteBuffer bf = tensor.toByteBuffer();
+        bf.array();
 
     }
 
@@ -112,7 +114,7 @@ public class NeuropodTensorAllocatorTest {
         }
         buffer.rewind();
         long [] shape = new long[]{2,2};
-        NeuropodTensor tensor = allocator.create(buffer, shape, TensorType.INT32_TENSOR);
+        NeuropodTensor tensor = allocator.copyFrom(buffer, shape, TensorType.INT32_TENSOR);
         assertArrayEquals(tensor.getDims(), shape);
         for (int i=0; i<2; i++) {
             for (int j=0; j<2; j++) {

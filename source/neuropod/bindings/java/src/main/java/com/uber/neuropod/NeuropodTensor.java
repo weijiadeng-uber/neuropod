@@ -126,6 +126,20 @@ public class NeuropodTensor extends NativeClass implements Serializable {
     }
 
     /**
+     * Flatten the tensor data and convert it to a byte buffer in a native order.
+     * <p>
+     *
+     * @return the ByteBuffer
+     */
+
+    public ByteBuffer toByteBuffer() {
+        ByteBuffer ret = ByteBuffer.allocate(buffer.capacity()).order(ByteOrder.LITTLE_ENDIAN);
+        ret.put(buffer);
+        ret.rewind();
+        return ret;
+    }
+
+    /**
      * Flatten the tensor data and convert it to a string list.
      * <p>
      * Can only be used when the tensor is STRING_TENSOR. Will trigger
@@ -133,7 +147,7 @@ public class NeuropodTensor extends NativeClass implements Serializable {
      *
      * @return the List
      */
-    List<String> toStringList() {
+    public List<String> toStringList() {
         return nativeToStringList(super.getNativeHandle());
     }
 

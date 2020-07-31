@@ -243,7 +243,7 @@ jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<neuropod::TensorSpec
     jobject ret = env->NewObject(java_util_ArrayList, java_util_ArrayList_, specs.size());
     for (const auto &tensorSpec : specs)
     {
-        auto    type = getFieldObject(env, com_uber_neuropod_TensorType, tensorTypeToString(tensorSpec.type).c_str());
+        auto    type = getTensorTypeField(env, tensorTypeToString(tensorSpec.type).c_str());
         jstring name = env->NewStringUTF(tensorSpec.name.c_str());
         jobject dims = env->NewObject(java_util_ArrayList, java_util_ArrayList_, tensorSpec.dims.size());
         for (const auto &dim : tensorSpec.dims)
