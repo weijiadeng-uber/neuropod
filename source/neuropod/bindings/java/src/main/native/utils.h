@@ -35,6 +35,12 @@ jclass findClass(JNIEnv *env, const char *name);
 // A wrapper for env->GetMethodID, will throw a cpp exception if the get fails.
 jmethodID getMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig);
 
+<<<<<<< HEAD
+=======
+// A wrapper for env->GetStaticMethodID, will throw a cpp exception if the get fails.
+jmethodID getStaticMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig);
+
+>>>>>>> 65437be... neuropod load model
 // Get the corresponding Java enum based on the given field name.
 jobject getFieldObject(JNIEnv *env, jclass enumClass, std::string fieldName);
 
@@ -45,6 +51,7 @@ std::string tensorTypeToString(TensorType type);
 // like a normal function: it won't interupt the normal program work flow.
 void throwJavaException(JNIEnv *env, const char *message);
 
+<<<<<<< HEAD
 // Copy a shared_ptr to heap
 template <typename T>
 std::shared_ptr<T> *toHeap(std::shared_ptr<T> ptr)
@@ -52,5 +59,7 @@ std::shared_ptr<T> *toHeap(std::shared_ptr<T> ptr)
     return new std::shared_ptr<T>(std::move(ptr));
 }
 
+=======
+>>>>>>> 65437be... neuropod load model
 } // namespace jni
 } // namespace neuropod

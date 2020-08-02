@@ -33,6 +33,7 @@ using namespace neuropod::jni;
 
 jobject toJavaTensorSpecList(JNIEnv *env, const std::vector<neuropod::TensorSpec> &specs);
 
+<<<<<<< HEAD
 JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_String_2J(JNIEnv *env,
                                                                                         jclass,
                                                                                         jstring path,
@@ -47,13 +48,28 @@ JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_St
         }
         auto                convertedPath = toString(env, path);
         neuropod::Neuropod *ret           = nullptr;
+=======
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_String_2(JNIEnv *env,
+                                                                                       jclass,
+                                                                                       jstring path)
+{
+    try
+    {
+        auto                     convertedPath = toString(env, path);
+        neuropod::Neuropod *     ret           = nullptr;
+        neuropod::RuntimeOptions opts;
+>>>>>>> 65437be... neuropod load model
         if (isTestMode)
         {
             ret = new neuropod::Neuropod(convertedPath, detail::ope_backend_location_overrides, opts);
         }
         else
         {
+<<<<<<< HEAD
             ret = new neuropod::Neuropod(convertedPath, opts);
+=======
+            ret = new neuropod::Neuropod(convertedPath);
+>>>>>>> 65437be... neuropod load model
         }
         return reinterpret_cast<jlong>(ret);
     }
@@ -64,17 +80,48 @@ JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_St
     return reinterpret_cast<jlong>(nullptr);
 }
 
+<<<<<<< HEAD
 JNIEXPORT void JNICALL Java_com_uber_neuropod_Neuropod_nativeDelete(JNIEnv *env, jobject obj, jlong handle)
 {
     try
     {
 
         delete reinterpret_cast<neuropod::Neuropod *>(handle);
+=======
+JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeNew__Ljava_lang_String_2J(JNIEnv *env,
+                                                                                        jclass,
+                                                                                        jstring path,
+                                                                                        jlong   optHandle)
+{
+    auto opts = reinterpret_cast<neuropod::RuntimeOptions *>(optHandle);
+    try
+    {
+        auto                convertedPath = toString(env, path);
+        neuropod::Neuropod *ret           = nullptr;
+        if (isTestMode)
+        {
+            ret = new neuropod::Neuropod(convertedPath, detail::ope_backend_location_overrides, *opts);
+        }
+        else
+        {
+            ret = new neuropod::Neuropod(convertedPath, *opts);
+        }
+        return reinterpret_cast<jlong>(ret);
+>>>>>>> 65437be... neuropod load model
     }
     catch (const std::exception &e)
     {
         throwJavaException(env, e.what());
     }
+<<<<<<< HEAD
+=======
+    return reinterpret_cast<jlong>(nullptr);
+}
+
+JNIEXPORT void JNICALL Java_com_uber_neuropod_Neuropod_nativeDelete(JNIEnv *, jobject obj, jlong handle)
+{
+    delete reinterpret_cast<neuropod::Neuropod *>(handle);
+>>>>>>> 65437be... neuropod load model
 }
 
 JNIEXPORT jobject JNICALL Java_com_uber_neuropod_Neuropod_nativeGetInputs(JNIEnv *env, jclass, jlong handle)
@@ -152,8 +199,15 @@ JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeGetAllocator(JNIEn
 {
     try
     {
+<<<<<<< HEAD
         auto model = reinterpret_cast<neuropod::Neuropod *>(handle);
         return reinterpret_cast<jlong>(toHeap(model->get_tensor_allocator()));
+=======
+        auto model           = reinterpret_cast<neuropod::Neuropod *>(handle);
+        auto allocator       = model->get_tensor_allocator();
+        auto allocatorInHeap = new std::shared_ptr<neuropod::NeuropodTensorAllocator>(std::move(allocator));
+        return reinterpret_cast<jlong>(allocatorInHeap);
+>>>>>>> 65437be... neuropod load model
     }
     catch (const std::exception &e)
     {
@@ -166,8 +220,14 @@ JNIEXPORT jlong JNICALL Java_com_uber_neuropod_Neuropod_nativeGetGenericAllocato
 {
     try
     {
+<<<<<<< HEAD
         std::shared_ptr<neuropod::NeuropodTensorAllocator> allcator = neuropod::get_generic_tensor_allocator();
         return reinterpret_cast<jlong>(toHeap(std::move(allcator)));
+=======
+        auto allocator       = neuropod::get_generic_tensor_allocator();
+        auto allocatorInHeap = new std::shared_ptr<neuropod::NeuropodTensorAllocator>(std::move(allocator));
+        return reinterpret_cast<jlong>(allocatorInHeap);
+>>>>>>> 65437be... neuropod load model
     }
     catch (const std::exception &e)
     {

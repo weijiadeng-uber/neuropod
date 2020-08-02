@@ -60,6 +60,19 @@ jmethodID getMethodID(JNIEnv *env, jclass clazz, const char *name, const char *s
     return ret;
 }
 
+<<<<<<< HEAD
+=======
+jmethodID getStaticMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig)
+{
+    jmethodID ret = env->GetStaticMethodID(clazz, name, sig);
+    if (reinterpret_cast<jlong>(ret) == 0)
+    {
+        throw std::runtime_error(std::string("Method ID not found: ") + name + sig);
+    }
+    return ret;
+}
+
+>>>>>>> 65437be... neuropod load model
 jobject getFieldObject(JNIEnv *env, jclass dataTypes, std::string fieldName)
 {
     jfieldID field = env->GetStaticFieldID(dataTypes, fieldName.c_str(), TENSOR_TYPE.c_str());

@@ -16,6 +16,7 @@ limitations under the License.
 #include "com_uber_neuropod_NeuropodTensorAllocator.h"
 
 #include "neuropod/neuropod.hh"
+<<<<<<< HEAD
 #include "utils.h"
 
 #include <jni.h>
@@ -32,4 +33,14 @@ JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodTensorAllocator_nativeDele
     {
         neuropod::jni::throwJavaException(env, e.what());
     }
+=======
+
+#include <jni.h>
+
+JNIEXPORT void JNICALL Java_com_uber_neuropod_NeuropodTensorAllocator_nativeDelete(JNIEnv *, jobject, jlong handle)
+{
+    auto allocator = reinterpret_cast<std::shared_ptr<neuropod::NeuropodTensorAllocator> *>(handle);
+    (*allocator).reset();
+    delete allocator;
+>>>>>>> 65437be... neuropod load model
 }

@@ -160,4 +160,3 @@ public class NeuropodTensor extends NativeClass implements Serializable {
     @Override
     protected void nativeDelete(long handle) throws NeuropodJNIException {}
 }
-
