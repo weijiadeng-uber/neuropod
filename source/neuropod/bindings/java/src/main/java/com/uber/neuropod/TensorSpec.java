@@ -16,6 +16,7 @@ limitations under the License.
 package com.uber.neuropod;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type Tensor spec.
@@ -24,6 +25,30 @@ public class TensorSpec {
     private String name;
     private TensorType type;
     private List<Dimension> dims;
+
+    @Override
+    public String toString() {
+        return "TensorSpec{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", dims=" + dims +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TensorSpec)) return false;
+        TensorSpec that = (TensorSpec) o;
+        return getName().equals(that.getName()) &&
+                getType() == that.getType() &&
+                getDims().equals(that.getDims());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getType(), getDims());
+    }
 
     /**
      * Instantiates a new Tensor spec.
