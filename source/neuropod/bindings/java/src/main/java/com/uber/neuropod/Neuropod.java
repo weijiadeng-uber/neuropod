@@ -96,7 +96,7 @@ public class Neuropod extends NativeClass {
      * @return the input specs
      */
     public List<TensorSpec> getInputs() {
-        return null;
+        return nativeGetInputs(super.getNativeHandle());
     }
 
     /**
@@ -105,7 +105,7 @@ public class Neuropod extends NativeClass {
      * @return the output specs
      */
     public List<TensorSpec> getOutputs() {
-        return null;
+        return nativeGetOutputs(super.getNativeHandle());
     }
 
     /**
@@ -120,22 +120,34 @@ public class Neuropod extends NativeClass {
      *
      * @return the tensor allocator
      */
-    public NeuropodTensorAllocator getTensorAllocator() {return null;}
+    public NeuropodTensorAllocator getTensorAllocator() {
+        return new NeuropodTensorAllocator(nativeGetAllocator(super.getNativeHandle()));
+    }
 
     /**
      * Gets a generic tensor allocator.
      *
      * @return the generic tensor allocator
      */
-    public static NeuropodTensorAllocator getGenericTensorAllocator() {return null;}
+    public static NeuropodTensorAllocator getGenericTensorAllocator() {
+        return new NeuropodTensorAllocator(nativeGetGenericAllocator());
+    }
 
-    static private native long nativeNew(String filePath, long optionHandle);
+    private static native long nativeNew(String filePath, long optionHandle);
 
-    static private native void nativeLoadModel(long modelHandle);
+    private static native void nativeLoadModel(long modelHandle);
 
-    static private native String nativeGetName(long modelHandle);
+    private static native String nativeGetName(long modelHandle);
 
-    static private native String nativeGetPlatform(long modelHandle);
+    private static native String nativeGetPlatform(long modelHandle);
+
+    private static native List<TensorSpec> nativeGetInputs(long modelHandle);
+
+    private static native List<TensorSpec> nativeGetOutputs(long modelHandle);
+
+    private static native long nativeGetAllocator(long modelHandle);
+
+    private static native long nativeGetGenericAllocator();
 
     @Override
     protected native void nativeDelete(long handle);
